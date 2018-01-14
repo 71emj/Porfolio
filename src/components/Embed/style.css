@@ -1,0 +1,9 @@
+video {
+	min-height: 70vh;
+	width: 100%;
+}
+
+.ui.embed {
+	background: none !important;
+}
+

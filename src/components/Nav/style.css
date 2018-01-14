@@ -1,0 +1,11 @@
+nav {
+	background-color: #efefef !important;
+	border-bottom: 1px solid lightgrey !important;
+	box-shadow: 0 0 2px 0 rgba(34,36,38,.15) !important;
+	height: 4.5rem;
+}
+
+header.masthead.segment {
+	border-radius: 0;
+	padding: 0;
+}
