@@ -1,0 +1,8 @@
+{
+	"About": {
+		"refId": "text-1",
+		"name": "About",
+		"content": "Hello World, my name is Timothy Jeng and I am a developer, designer and a stage four caffeine addict. \n",
+		"sub": "console.log(\"Hello World\");"
+	}
+}

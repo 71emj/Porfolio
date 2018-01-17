@@ -2,10 +2,23 @@ nav {
 	background-color: #efefef !important;
 	border-bottom: 1px solid lightgrey !important;
 	box-shadow: 0 0 2px 0 rgba(34,36,38,.15) !important;
-	height: 4.5rem;
+	height: 8.75vh;
+	/*overflow-y: none;*/
 }
 
 header.masthead.segment {
 	border-radius: 0;
 	padding: 0;
 }
+
+/*nav.--nav {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: auto;
+	right: 0;
+	min-width: 100%;
+	width: 100%;
+	border-radius: 0 !important;
+	z-index: 101;
+}*/

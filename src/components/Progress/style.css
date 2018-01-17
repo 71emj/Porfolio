@@ -1,0 +1,25 @@
+.--vertical-progress {
+	height: 5rem;
+	width: .15rem;
+	margin-top: .5rem;
+	background: rgba(30, 30, 30, 0.1);
+	border-radius: 12px; 
+}
+
+.--vertical-progress.active {
+	background: white;
+	width: .175rem;
+}
+
+.--progress-container {
+	position: relative;
+	right: 5%;
+	bottom: -10%;
+}
+
+.--progress {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	height: 100%;
+}

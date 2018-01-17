@@ -1,0 +1,31 @@
+section {
+	min-height: 100vh;
+	padding: 3rem 0 !important;
+}
+
+section.--content {
+	padding: 10rem 0 !important;
+	/*min-height: 91.25vh;*/
+}
+
+section.--content > .column {
+	height: 100%;
+}
+
+section > .column {
+}
+
+.--section-title {
+	font-size: 2.75rem;
+}
+
+.--section-title:after {
+	display: table;
+	border-bottom: 1px solid white;
+}
+
+@media only screen and (max-width: 991px) and (min-width: 768px) {
+	.ui.doubling.grid > section.row.--content {
+		padding: 7rem 0 !important;
+	}
+}

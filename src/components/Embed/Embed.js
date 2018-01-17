@@ -6,7 +6,7 @@ const Video = props => (
 	<Embed
 		className="--video"
 		placeholder={props.placeholder}
-		children={[<video src={props.src} autoPlay loop />]}
+		content={[<video src={props.src} autoPlay loop />]}
 		active={true}
 	/>
 );
