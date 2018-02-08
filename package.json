@@ -2,7 +2,7 @@
   "name": "profile",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://71emj.github.io/Porfolio/",
+  "homepage": "https://71emj.github.io/portfolio/",
   "dependencies": {
     "gh-pages": "^1.1.0",
     "react": "^16.2.0",

@@ -47,7 +47,7 @@ class Nav extends Component {
 
 	main = () => {
 		return (
-			<Menu.Item header as="h3" key="logo">
+			<Menu.Item header as="h2" key="logo">
 				{this.props.logo}
 			</Menu.Item>
 		);
