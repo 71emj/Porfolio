@@ -1,0 +1,8 @@
+* {
+	cursor: none !important;
+}
+
+canvas {
+	position: fixed;
+	z-index: 10;
+}

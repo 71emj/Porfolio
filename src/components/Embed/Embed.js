@@ -3,12 +3,7 @@ import { Embed } from "semantic-ui-react";
 import "./style.css";
 
 const Video = props => (
-	<Embed
-		className="--video"
-		placeholder={props.placeholder}
-		content={[<video src={props.src} autoPlay loop />]}
-		active={true}
-	/>
+	<video src={props.src} className="--video" autoPlay loop active />
 );
 
 export default Video;

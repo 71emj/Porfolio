@@ -3,17 +3,23 @@ import { Menu, Dropdown, Icon } from "semantic-ui-react";
 import "./style.css";
 
 class Nav extends Component {
+	state = {}
+
+	handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+
 	rightMenu = () => {
+		const { activeItem } = this.state;
 		const links = this.props.link;
 		const linkItems = [];
 		const isResponsive = window.innerWidth < 897;
 
+		let i = 0;
 		for (let elem in links) {
 			linkItems.push(
 				isResponsive ? (
 					<Dropdown.Item key={elem}>{links[elem]}</Dropdown.Item>
 				) : (
-					<Menu.Item link={true} key={elem} >
+					<Menu.Item index={i++} link={true} key={elem} onClick={this.handleItemClick}>
 						{links[elem]}
 					</Menu.Item>
 				)
@@ -21,14 +27,15 @@ class Nav extends Component {
 		}
 
 		return isResponsive ? (
-			<Dropdown 
+			<Dropdown
 				pointing="top"
 				icon="content"
 				text="Menu&nbsp;&nbsp;"
 				item
 				simple={true}
 				className="link right"
-				key="links">
+				key="links"
+			>
 				<Dropdown.Menu>{linkItems}</Dropdown.Menu>
 			</Dropdown>
 		) : (
@@ -56,8 +63,8 @@ class Nav extends Component {
 		return (
 			<Menu
 				fixed="top"
-				inverted={false}
-				borderless={false}
+				inverted={true}
+				borderless={true}
 				size="huge"
 				as="nav"
 				items={[this.main(), this.rightMenu()]}

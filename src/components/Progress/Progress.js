@@ -4,7 +4,7 @@ import "./style.css";
 class Progress extends Component {
 	renderProgress() {
 		const { amount, active } = this.props;
-
+		console.log("active is %s", active);
 		return Array(amount)
 			.fill(null)
 			.map((elem, index) => {
