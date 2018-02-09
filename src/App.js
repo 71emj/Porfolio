@@ -21,7 +21,7 @@ class App extends Component {
       <main key="content">
         <Canvas />
         <header>
-          <img src="../assets/img/SVG/screen.svg" /> 
+          <img src="./assets/img/SVG/screen.svg" /> 
         </header>
       </main>
     ];
