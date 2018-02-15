@@ -4,8 +4,10 @@
 
 body {
   position: relative;
-  background: black;
+  background: linear-gradient(30deg, red, blue);
+  background-attachment: fixed;
   height: 100%;
+
   /*padding: 5rem 0 0;*/
   /*overflow-y: hidden;*/
 }

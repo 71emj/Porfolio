@@ -1,7 +1,7 @@
 nav {
   background-color: rgba(0, 0, 0, 0) !important;
   /*border-bottom: 1px solid lightgrey !important;*/
-  height: 8.75vh;
+  height: 10%;
   padding-right: 1.5%;
   padding-left: 1.5%;
 }
@@ -19,15 +19,16 @@ nav.ui.menu .item {
   /*color: white;*/
 }
 
-nav.ui.menu .item:hover {
+nav.ui.menu .item:hover,
+nav.ui.menu .item.active {
   background: none !important;
 }
 
 nav.ui.menu .item:not(.header):hover::before {
   content: "";
   position: absolute;
-  top: -.85rem;
-  left: 15%;
+  top: -1.5rem;
+  left: 17.5%;
   border-bottom: 1.5px solid white;
   -webkit-animation: increase .3s;
   -moz-animation: increase .3s;
@@ -44,7 +45,7 @@ nav.ui.menu .header {
 
 @keyframes increase {
   to {
-    width: 70%;
+    width: 65%;
   }
 }
 

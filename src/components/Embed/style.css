@@ -1,9 +1,12 @@
+.--video {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	padding: 4%;
+}
+
 video {
-	/*min-height: 70vh;*/
+	/*height: 100%;*/
 	width: 100%;
 }
-
-.ui.embed {
-	background: none !important;
-}
-

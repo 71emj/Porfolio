@@ -2,25 +2,42 @@ import React, { Component } from "react";
 import { Menu, Dropdown, Icon } from "semantic-ui-react";
 import "./style.css";
 
-class Nav extends Component {
-	state = {}
+const linkobj = {
+	about: {
+		name: "About",
+		href: "#about"
+	},
+	contact: {
+		name: "Contact",
+		href: "#contact"
+	},
+	portfolio: {
+		name: "Portfolio",
+		href: "#portfolio"
+	},
+	source: {
+		name: "Github",
+		href: "https://github.com/71emj/portfolio"
+	}
+};
 
-	handleItemClick = (e, { name }) => this.setState({ activeItem: name });
+class Nav extends Component {
+	state = {};
 
 	rightMenu = () => {
 		const { activeItem } = this.state;
-		const links = this.props.link;
+		const links = linkobj;
 		const linkItems = [];
 		const isResponsive = window.innerWidth < 897;
 
-		let i = 0;
 		for (let elem in links) {
+			const cur = links[elem];
 			linkItems.push(
 				isResponsive ? (
-					<Dropdown.Item key={elem}>{links[elem]}</Dropdown.Item>
+					<Dropdown.Item key={cur.name}>{cur.name}</Dropdown.Item>
 				) : (
-					<Menu.Item index={i++} link={true} key={elem} onClick={this.handleItemClick}>
-						{links[elem]}
+					<Menu.Item href={cur.href} link={true} key={cur.name}>
+						{cur.name}
 					</Menu.Item>
 				)
 			);
@@ -47,7 +64,13 @@ class Nav extends Component {
 
 	main = () => {
 		return (
-			<Menu.Item header as="h2" key="logo">
+			<Menu.Item
+				header
+				as="h2"
+				key="logo"
+				link={true}
+				onClick={evt => window.location.assign("/")}
+			>
 				{this.props.logo}
 			</Menu.Item>
 		);
@@ -67,10 +90,7 @@ class Nav extends Component {
 				borderless={true}
 				size="huge"
 				as="nav"
-				items={[this.main(), this.rightMenu()]}
-				onItemClick={e => {
-					console.log(e.target);
-				}}
+				children={[this.main(), this.rightMenu()]}
 				style={{ border: "0", boxShadow: "none" }}
 			/>
 		);
@@ -78,3 +98,11 @@ class Nav extends Component {
 }
 
 export default Nav;
+
+// <nav
+// 				className="ui menu fixed huge inverted borderless"
+// 				style={{ border: "0", boxShadow: "none" }}
+// 			>
+// 				{this.main()}
+// 				{this.rightMenu()}
+// 			</nav>
