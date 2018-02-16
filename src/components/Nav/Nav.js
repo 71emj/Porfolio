@@ -45,7 +45,7 @@ class Nav extends Component {
 						href={cur.href}
 						link={true}
 						key={cur.name}
-						onClick={() => setTimeout(() => { this.props.scrollTo() }, 0)}
+						onClick={evt => setTimeout(() => { this.props.scrollTo(evt) }, 0)}
 					>{cur.name}</Menu.Item>
 				)
 			);

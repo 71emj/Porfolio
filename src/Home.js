@@ -19,7 +19,7 @@ class Home extends Component {
       html: html
     };
     this.state = {
-      visible: "home"
+      visible: ""
     };
   }
 
@@ -34,65 +34,86 @@ class Home extends Component {
     );
   }
 
-  gradientScroll = evt => {
+  gradientScroll = (evt, scrollY) => {
     const { body } = this.doms;
     const valY = window.scrollY;
     const height = this.docHeight;
-    body.style.backgroundPosition = `50% ${0 + valY / height * 100}%`;
+    if (scrollY) {
+      return body.style.backgroundPosition = `50% ${scrollY}%`;
+    }
+    body.style.backgroundPosition = `50% ${valY / height * 100}%`;
   };
+  
+  scroll = (name, valY, posY) => {
+    window.scrollTo(0, valY);
+    this.gradientScroll(null, posY);
+    setTimeout(() => {
+      this.setState((state, props) => {
+        console.log(valY);
+        return { visible: name };
+      });
+    }, 300);
+  }
 
-  scrollToPlace = evt => {
+  scrollHandler = evt => {
     const { visible } = this.state;
     const valY = window.scrollY;
-    const flagY = evt.deltaY;
     const height = this.docHeight;
-    const scroll = (name, valY, self) => {
-      window.scrollTo(0, valY);
-      setTimeout(() => {
-        self.setState((state, props) => {
-          console.log(valY);
-          return { visible: name };
-        });
-      }, 300);
-    };
-
+    const flagY = evt.deltaY;
+    // describing condition....
+    // if scorllY < 200 and the mouse scrolls up scroll to 0 
+    // if scrollY > 200 but < 750 
     switch (true) {
-      case valY === 0 && flagY <= -15:
-        scroll("home", valY, this);
-        break;
-      case valY >= 300 && visible !== "about" && flagY >= 15:
+      case flagY <= -35 && visible === "about":
         evt.preventDefault();
-        setTimeout(() => { scroll("about", 745, this); }, 100);
+        setTimeout(() => { this.scroll("home", 0, 0); }, 100);
         break;
-      case valY >= 700 && visible !== "contact":
+      case valY > 200 && visible === "home" && flagY >= 35 || visible === "contact" && flagY <= -35:
         evt.preventDefault();
-        setTimeout(() => { scroll("contact", 1500, this); }, 100);
+        setTimeout(() => { this.scroll("about", 745, 60); }, 100);
         break;
-      
-      // two scroll event should have the same input to sync for consistent effect
-      // 
-      // case valY / height > .5 && flagY >= 15:
-      //   scroll("contact", valY, this);
-      //   break;
+      case valY > 700 && visible === "about" && flagY >= 35:
+        evt.preventDefault();
+        setTimeout(() => { this.scroll("contact", 1500, 95); }, 100);
+        break;
       default:
-        console.log("something's up...");
+        console.log("nothing triggerd");
     }
   };
 
   adjustBackground = evt => {
     const { body } = this.doms;
     const height = this.docHeight;
-    body.style.backgroundSize = `${window.innerWidth}px ${height}px`;
+    body.style.backgroundSize = `${window.innerWidth}px ${height * 1.25}px`;
   };
 
   componentDidMount() {
+    const ratio =  window.scrollY / this.docHeight;
     this.adjustBackground();
-    this.gradientScroll();
     window.addEventListener("resize", this.adjustBackground);
     window.addEventListener("mousewheel", evt => {
-      this.gradientScroll(evt);
-      this.scrollToPlace(evt);
+      this.scrollHandler(evt);
     });
+
+    let field, posY;
+    switch (true) {
+      case ratio <= .3:
+        field = "home";
+        posY = 0;
+        break;
+      case ratio <= .6:
+        field = "about";
+        posY = 60;
+        break;
+      case ratio <= .9:
+        field = "contact";
+        posY = 95
+        break;
+      default:
+        console.log(field);
+    }
+    this.gradientScroll(null, posY);
+    this.setState({ visible: field });
   }
 
   render() {
@@ -109,7 +130,7 @@ class Home extends Component {
         <Nav
           logo="Timothy Jeng"
           link={{ ...links }}
-          scrollTo={this.gradientScroll}
+          scrollTo={this.scrollHandler}
           key="header"
         />
         <main key="content">
@@ -130,5 +151,3 @@ class Home extends Component {
 }
 
 export default Home;
-
-// if the #name is not visible
