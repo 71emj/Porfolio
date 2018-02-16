@@ -16,8 +16,8 @@ const App = () => {
     <Router>
       <div>
         <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/portfolio">
+          <Route path="/" component={Home} />
+          <Route path="/71emj/portfolio">
             <div className="--header">
               <Banner src="/assets/img/log.mp4" />
             </div>
