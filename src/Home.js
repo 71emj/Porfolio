@@ -5,7 +5,6 @@ import Canvas from "./components/Canvas";
 import Banner from "./components/Banner";
 import "./App.css";
 
-
 // the idea is, first ver of the portfolio will only contain in main page
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
@@ -43,18 +42,40 @@ class Home extends Component {
   };
 
   scrollToPlace = evt => {
+    const { visible } = this.state;
     const valY = window.scrollY;
     const flagY = evt.deltaY;
     const height = this.docHeight;
+    const scroll = (name, valY, self) => {
+      window.scrollTo(0, valY);
+      setTimeout(() => {
+        self.setState((state, props) => {
+          console.log(valY);
+          return { visible: name };
+        });
+      }, 300);
+    };
 
-    // set proper condition first, then fix the bug
-    if (valY / height >= 0.30 && flagY >= 15) {
-      // window.scrollTo(0, valY);
-      this.setState((state, props) => {
-        console.log(valY);
-        setTimeout(() => { window.scrollTo(0, valY) }, 100);
-        return { visible: "about" }
-      });
+    switch (true) {
+      case valY === 0 && flagY <= -15:
+        scroll("home", valY, this);
+        break;
+      case valY >= 300 && visible !== "about" && flagY >= 15:
+        evt.preventDefault();
+        setTimeout(() => { scroll("about", 745, this); }, 100);
+        break;
+      case valY >= 700 && visible !== "contact":
+        evt.preventDefault();
+        setTimeout(() => { scroll("contact", 1500, this); }, 100);
+        break;
+      
+      // two scroll event should have the same input to sync for consistent effect
+      // 
+      // case valY / height > .5 && flagY >= 15:
+      //   scroll("contact", valY, this);
+      //   break;
+      default:
+        console.log("something's up...");
     }
   };
 

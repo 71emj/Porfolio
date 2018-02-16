@@ -8,7 +8,7 @@ class Banner extends Component {
 	render() {
 		return (
 			<Container as="div" key="banner" className="--flex --wrapper">
-				<Transition animation="scale" duration={500} visible={this.props.show} className="">
+				<Transition animation="fade up" duration={750} visible={this.props.show}>
 					<div>
 						<img src="./assets/img/SVG/screen.svg" className="--monitor" />
 						<img src="./assets/img/SVG/line1.svg" className="--lines" />
