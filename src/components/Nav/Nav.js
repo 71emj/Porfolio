@@ -98,11 +98,3 @@ class Nav extends Component {
 }
 
 export default Nav;
-
-// <nav
-// 				className="ui menu fixed huge inverted borderless"
-// 				style={{ border: "0", boxShadow: "none" }}
-// 			>
-// 				{this.main()}
-// 				{this.rightMenu()}
-// 			</nav>

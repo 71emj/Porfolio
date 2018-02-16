@@ -54,6 +54,7 @@ class Canvas extends Component {
 			this.draw(evt.clientX, evt.clientY);
 		};
 		window.onresize = () => { createHiDPICanvas(); };
+		window.onclick = evt => { console.log(evt); };
 	}
 
 	render() {

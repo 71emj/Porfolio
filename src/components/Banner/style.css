@@ -8,10 +8,31 @@
   height: 100%;
 }
 
+.--flex.--wrapper::before {
+	display: inline-block;
+	content: "";
+	border-top: 5px solid white;
+	border-bottom: 5px solid white;
+}
+
+.--background {
+	/*position: absolute;*/
+	/*left: 25%;*/
+	width: 100%;
+}
+
+.--lines {
+	position: relative;
+	top: .5rem;
+	margin-top: .5rem;
+	/*height: 3rem;*/
+	/*transform: rotate(-45deg);*/
+}
+
+
 @media only screen and (max-width: 897px) {
   .--flex.--wrapper {
     min-width: auto;
     width: 100% !important;
-  	
   }
 }

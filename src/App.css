@@ -4,17 +4,26 @@
 
 body {
   position: relative;
-  background: linear-gradient(30deg, red, blue);
-  background-attachment: fixed;
   height: 100%;
-
-  /*padding: 5rem 0 0;*/
+  /*background: linear-gradient(30deg, red, blue);*/
+  /*background: linear-gradient(360deg, #fb7070, #005ec5, #004da0);*/
+  background: linear-gradient(#004da0, #005ec5, #fb7070, #fb7070, #fdb95e, #3cff8d);
+  background-position: 50% 0%; 
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  --webkit-transition: background-position ease .75s;
+  -moz-transition: background-position ease .75s;
+  -ms-transition: background-position ease .75s;
+  -o-transition: background-position ease .75s;
+  transition: background-position ease .75s;
   /*overflow-y: hidden;*/
 }
 
-header {
+.--header {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   min-height: 100vh;
   height: 100%;
   max-width: 420px;
@@ -22,7 +31,7 @@ header {
   margin: auto;
 }
 
-header>img {
+.--header>img {
   width: 100%;
 }
 
@@ -80,4 +89,16 @@ div.--banner {
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 50% 0%
+  }
+  50% {
+    background-position: 50% 100%
+  }
+  100% {
+    background-position: 50% 0%
+  }
 }
