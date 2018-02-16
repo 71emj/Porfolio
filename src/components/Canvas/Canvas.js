@@ -50,10 +50,8 @@ class Canvas extends Component {
 		this.canvas = createHiDPICanvas();
 		this.ctx = this.canvas.getContext("2d");
 		
-		window.onmousemove = evt => {
-			this.draw(evt.clientX, evt.clientY);
-		};
-		window.onresize = () => { createHiDPICanvas(); };
+		window.onmousemove = evt => { this.draw(evt.clientX, evt.clientY); };
+		window.addEventListener("resize", evt => { createHiDPICanvas(); });
 		window.onclick = evt => { console.log(evt); };
 	}
 

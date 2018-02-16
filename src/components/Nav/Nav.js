@@ -2,18 +2,23 @@ import React, { Component } from "react";
 import { Menu, Dropdown, Icon } from "semantic-ui-react";
 import "./style.css";
 
+// inorder to create scrolling effect, perhaps what i need is scrollto function
 const linkobj = {
+	home: {
+		name: "Home",
+		href: "#home"
+	},
 	about: {
 		name: "About",
 		href: "#about"
 	},
-	contact: {
-		name: "Contact",
-		href: "#contact"
-	},
 	portfolio: {
 		name: "Portfolio",
 		href: "#portfolio"
+	},
+	contact: {
+		name: "Contact",
+		href: "#contact"
 	},
 	source: {
 		name: "Github",
@@ -21,11 +26,11 @@ const linkobj = {
 	}
 };
 
+// the delay is caused by the fact that the function is detecting scollY, which won't change until
+// the end of event
+// async should fix the problem
 class Nav extends Component {
-	state = {};
-
 	rightMenu = () => {
-		const { activeItem } = this.state;
 		const links = linkobj;
 		const linkItems = [];
 		const isResponsive = window.innerWidth < 897;
@@ -34,11 +39,14 @@ class Nav extends Component {
 			const cur = links[elem];
 			linkItems.push(
 				isResponsive ? (
-					<Dropdown.Item key={cur.name}>{cur.name}</Dropdown.Item>
+					<Dropdown.Item key={cur.name}> {cur.name} </Dropdown.Item>
 				) : (
-					<Menu.Item href={cur.href} link={true} key={cur.name}>
-						{cur.name}
-					</Menu.Item>
+					<Menu.Item
+						href={cur.href}
+						link={true}
+						key={cur.name}
+						onClick={() => setTimeout(() => { this.props.scrollTo() }, 0)}
+					>{cur.name}</Menu.Item>
 				)
 			);
 		}
@@ -52,13 +60,10 @@ class Nav extends Component {
 				simple={true}
 				className="link right"
 				key="links"
-			>
-				<Dropdown.Menu>{linkItems}</Dropdown.Menu>
+			><Dropdown.Menu>{linkItems}</Dropdown.Menu>
 			</Dropdown>
 		) : (
-			<Menu.Menu position="right" key="links">
-				{linkItems}
-			</Menu.Menu>
+			<Menu.Menu position="right" key="links">{linkItems}</Menu.Menu>
 		);
 	};
 
@@ -70,16 +75,12 @@ class Nav extends Component {
 				key="logo"
 				link={true}
 				onClick={evt => window.location.assign("/")}
-			>
-				{this.props.logo}
-			</Menu.Item>
+			>{this.props.logo}</Menu.Item>
 		);
 	};
 
-	componentWillMount() {
-		window.addEventListener("resize", () => {
-			this.forceUpdate();
-		});
+	componentDidMount() {
+		window.addEventListener("resize", () => { this.forceUpdate() });
 	}
 
 	render() {

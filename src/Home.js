@@ -1,40 +1,113 @@
 import React, { Component } from "react";
-import { Grid, Column, Sticky } from "semantic-ui-react";
+import { Transition, Divider } from "semantic-ui-react";
 import Nav from "./components/Nav";
 import Canvas from "./components/Canvas";
 import Banner from "./components/Banner";
-import Section from "./components/Section";
-import content from "./paragraph.json";
 import "./App.css";
 
-class App extends Component {
+
+// the idea is, first ver of the portfolio will only contain in main page
+// portfolio link will lead to portfolio part of the page, which will only have a message
+// and links to repos
+// later will add more pages to the collections
+class Home extends Component {
+  constructor(props) {
+    super(props);
+    const body = document.body;
+    const html = document.documentElement;
+    this.doms = {
+      body: body,
+      html: html
+    };
+    this.state = {
+      visible: "home"
+    };
+  }
+
+  get docHeight() {
+    const { body, html } = this.doms;
+    return Math.max(
+      body.scrollHeight,
+      body.offsetHeight,
+      html.clientHeight,
+      html.scrollHeight,
+      html.offsetHeight
+    );
+  }
+
+  gradientScroll = evt => {
+    const { body } = this.doms;
+    const valY = window.scrollY;
+    const height = this.docHeight;
+    body.style.backgroundPosition = `50% ${0 + valY / height * 100}%`;
+  };
+
+  scrollToPlace = evt => {
+    const valY = window.scrollY;
+    const flagY = evt.deltaY;
+    const height = this.docHeight;
+
+    // set proper condition first, then fix the bug
+    if (valY / height >= 0.30 && flagY >= 15) {
+      // window.scrollTo(0, valY);
+      this.setState((state, props) => {
+        console.log(valY);
+        setTimeout(() => { window.scrollTo(0, valY) }, 100);
+        return { visible: "about" }
+      });
+    }
+  };
+
+  adjustBackground = evt => {
+    const { body } = this.doms;
+    const height = this.docHeight;
+    body.style.backgroundSize = `${window.innerWidth}px ${height}px`;
+  };
+
+  componentDidMount() {
+    this.adjustBackground();
+    this.gradientScroll();
+    window.addEventListener("resize", this.adjustBackground);
+    window.addEventListener("mousewheel", evt => {
+      this.gradientScroll(evt);
+      this.scrollToPlace(evt);
+    });
+  }
+
   render() {
+    const { visible } = this.state;
     const links = {
       about: "About",
       contact: "Contact",
       portfolio: "Portfolio",
       source: "Github"
     };
-    console.log(content["About"]);
 
-    return [
-      <Nav logo="Timothy Jeng" link={{ ...links }} key="header" />,
-      <main key="content">
-        <Canvas />
-        <header>
-          <Banner src="/assets/img/log.mp4"/>
-        </header>
-      </main>
-    ];
+    return (
+      <div>
+        <Nav
+          logo="Timothy Jeng"
+          link={{ ...links }}
+          scrollTo={this.gradientScroll}
+          key="header"
+        />
+        <main key="content">
+          <Canvas />
+          <div className="--header" id="home">
+            <Banner src="/assets/img/log.mp4" show={visible === "home"} />
+          </div>
+          <div className="--header" id="about">
+            <Banner src="/assets/img/log.mp4" show={visible === "about"} />
+          </div>
+          <div className="--header" id="contact">
+            <Banner src="/assets/img/log.mp4" show={visible === "contact"} />
+          </div>
+        </main>
+      </div>
+    );
   }
 }
 
-export default App;
+export default Home;
 
-// <Grid as="main" doubling={true} key="main">
-//         <Grid.Row verticalAlign="middle" as="section">
-//           <Grid.Column width={16}>
-//             <Banner key="banner" src="/assets/img/log.mp4" placeholder="nothing atm" />
-//           </Grid.Column>
-//         </Grid.Row>
-//       </Grid>
+// if the #name is not visible

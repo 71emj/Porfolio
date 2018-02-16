@@ -12,11 +12,11 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: 100%;
-  --webkit-transition: background-position ease .75s;
-  -moz-transition: background-position ease .75s;
-  -ms-transition: background-position ease .75s;
-  -o-transition: background-position ease .75s;
-  transition: background-position ease .75s;
+  --webkit-transition: background-position ease .5s;
+  -moz-transition: background-position ease .5s;
+  -ms-transition: background-position ease .5s;
+  -o-transition: background-position ease .5s;
+  transition: background-position ease .5s;
   /*overflow-y: hidden;*/
 }
 
