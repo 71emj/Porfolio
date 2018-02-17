@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Transition, Divider } from "semantic-ui-react";
 import Nav from "./components/Nav";
 import Canvas from "./components/Canvas";
 import Banner from "./components/Banner";
@@ -85,22 +84,19 @@ class Home extends Component {
     const { visible } = this.state;
     const winH = window.innerHeight;
     const valY = window.scrollY;
-    const height = this.docHeight;
     const flagY = evt.deltaY;
-    // describing condition....
-    // if scorllY < 200 and the mouse scrolls up scroll to 0
-    // if scrollY > 200 but < 750
+    
     switch (true) {
       case valY < 508 && flagY <= -10 && visible === "about":
         evt.preventDefault();
         setTimeout(() => {
-          this.scroll("home", 0, 0);
+          this.scroll("home", 0, 5);
         }, 100);
         break;
       case valY > 250 && visible === "home" && flagY >= 10 || visible === "contact" && flagY <= -10:
         evt.preventDefault();
         setTimeout(() => {
-          this.scroll("about", winH, 55);
+          this.scroll("about", winH, 45);
         }, 100);
         break;
       case valY > 1008 && visible === "about" && flagY >= 10:
@@ -136,11 +132,11 @@ class Home extends Component {
     switch (true) {
       case ratio <= 0.3:
         field = "home";
-        posY = 0;
+        posY = 5;
         break;
       case ratio <= 0.6:
         field = "about";
-        posY = 55;
+        posY = 45;
         break;
       case ratio <= 0.9:
         field = "contact";
