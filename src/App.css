@@ -7,7 +7,7 @@ body {
   height: 100%;
   /*background: linear-gradient(30deg, red, blue);*/
   /*background: linear-gradient(360deg, #fb7070, #005ec5, #004da0);*/
-  background: linear-gradient(#004da0, #00b9c5, #fb7070, #fdb95e, #ffdf30, #3cff8d);
+  background: linear-gradient(#004da0, #00b9c5, #5F4B8B, #d13171, #fb7070, #fdb95e, #ffdf30, #3cff8d);
   background-position: 50% 0%; 
   background-attachment: fixed;
   background-repeat: no-repeat;

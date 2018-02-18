@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import Embed from "../Embed";
-import { Container, Transition, List } from "semantic-ui-react";
+import { Container, Transition } from "semantic-ui-react";
 import "./style.css";
 
 class Banner extends Component {

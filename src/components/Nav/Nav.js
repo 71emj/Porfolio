@@ -26,9 +26,6 @@ const linkobj = {
 	}
 };
 
-// the delay is caused by the fact that the function is detecting scollY, which won't change until
-// the end of event
-// async should fix the problem
 class Nav extends Component {
 	rightMenu = () => {
 		const links = linkobj;
@@ -42,10 +39,11 @@ class Nav extends Component {
 					<Dropdown.Item key={cur.name}> {cur.name} </Dropdown.Item>
 				) : (
 					<Menu.Item
+						data-name={elem}
 						href={cur.href}
 						link={true}
 						key={cur.name}
-						onClick={evt => setTimeout(() => { this.props.scrollTo(evt) }, 0)}
+						onClick={evt => this.props.linkTo(evt)}
 					>{cur.name}</Menu.Item>
 				)
 			);

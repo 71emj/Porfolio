@@ -4,13 +4,6 @@ import Home from "./Home.js";
 import Banner from "./components/Banner";
 import "./App.css";
 
-const links = {
-  about: "About",
-  contact: "Contact",
-  portfolio: "Portfolio",
-  source: "Github"
-};
-
 const App = () => {
   return (
     <Router>
