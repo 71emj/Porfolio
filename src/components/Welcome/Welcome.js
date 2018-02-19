@@ -5,7 +5,7 @@ import "./style.css";
 class Welcome extends Component {
 	render() {
 		const duration = {
-			show: 750,
+			show: 500,
 			hide: 0
 		};
 		return (

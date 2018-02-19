@@ -26,26 +26,21 @@ class About extends Component {
 				children={
 					<Segment key="segment" as="div" size="huge" style={style}>
 						<Header as="h1" textAlign={"left"}>
-							About Me
+							Hi,
 							<Header.Subheader>
-								Hello there, I'm a North Carolina native now lucky to call
-								Colorado home
+								My name is Timothy Jeng, and I am a developer, designer, and a
+								stage 5 coffee drinker.
 							</Header.Subheader>
 						</Header>
 						<br />
 						<p>
-							Hi there - I'm a North Carolina native now lucky to call Colorado
-							home (fun fact, the sunset picture was taken off Highway 7 in
-							Broomfield circa Summer 2014). I recently graduated from UNC
-							Charlotte Web Development Boot Camp with a focus on Front End and
-							Full Stack Web Development. It's not uncommon to hear people speak
-							of their dream job or career aspirations. I'm thankful to have
-							found and established mine as a Web Developer. It’s like -
-							figuring out the subway system in a new city, or the puzzle
-							strategy of starting with border pieces - except better. Your hard
-							work, your code, is displayed directly in front of you, and can be
-							shared with the world to create it a better place. Check out some
-							of my work below!
+							I am a fully trained web developer, with knowledge in both
+							front and backend technologies. On the backend, I am skilled in
+							designing RESTful API with Node, Express, and MongoDB, user
+							authentication with Passport, JWT and server session; on the
+							frontend, I am proficient with javascript libraries such as
+							jQuery, React, and WebGL as well as CSS frameworks such as
+							Bootstrap and Semantic UI as well
 						</p>
 					</Segment>
 				}
