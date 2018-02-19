@@ -16,6 +16,7 @@ class Home extends Component {
     super(props);
     this.state = {
       visible: "",
+      invertStyle: false,
       scrolling: false
     };
   }
@@ -29,7 +30,8 @@ class Home extends Component {
   get DOMrefs() {
     const body = document.body;
     const html = document.documentElement;
-    return { body, html };
+    const nav = document.querySelector("nav");
+    return { body, html, nav };
   }
 
   get docHeight() {
@@ -95,19 +97,20 @@ class Home extends Component {
     const flagY = evt.deltaY;
     
     const params = new Array();
+    const scroll = () => this.scroll(...params);
     switch (true) {
       case valY < 508 && flagY <= -10 && visible === "about":
         params.push("home", 0, 0);
-        setTimeout(() => { this.scroll(...params); }, 250);
+        setTimeout(scroll, 250);
         break;
       case visible === "contact" && flagY <= -10:
       case valY > 250 && visible === "home" && flagY >= 10:
         params.push("about", winH, 15);
-        setTimeout(() => { this.scroll(...params); }, 250);
+        setTimeout(scroll, 250);
         break;
       case valY > 1008 && visible === "about" && flagY >= 10:
-        params.push("contact", winH * 2, 45);
-        setTimeout(() => { this.scroll(...params); }, 250);
+        params.push("contact", winH * 2, 45, true);
+        setTimeout(scroll, 250);
         break;
       default:
         if (scrolling) {
@@ -117,9 +120,9 @@ class Home extends Component {
     }
   }
 
-  scroll = (name, valY, posY) => {
+  scroll = (name, valY, posY, setInvert = false) => {
     console.log({name, valY, posY});
-    Promise.resolve(this.setState({ scrolling: true })).then(() => {
+    Promise.resolve(this.setState({ scrolling: true, invertStyle: setInvert })).then(() => {
       window.scrollTo(0, valY);
       this.gradientScroll(null, posY);
       setTimeout(() => {
@@ -130,35 +133,34 @@ class Home extends Component {
       }, 300);
     });
   }
-
-  gradientScroll = (evt, scrollY) => {
-    const { body, valY, docH } = this.DOMS;
-    if (scrollY) {
-      return (body.style.backgroundPosition = `50% ${scrollY}%`);
-    }
-    body.style.backgroundPosition = `50% ${valY / docH * 100}%`;
+  
+  gradientScroll = (evt, scrollY, className) => {
+    const { body, valY, docH, nav } = this.DOMS;
+    // [scrollY, className] = !isNaN(+scrollY) ? [scrollY, className] : ["", scrollY]; 
+    // nav.classList = ` ${className}`;
+    body.style.backgroundPosition = `50% ${scrollY}%`;
   }
 
   adjustBackground = evt => {
-    const { body, docH } = this.DOMS;
+    const { body, docH, winH } = this.DOMS;
     body.style.backgroundSize = `${window.innerWidth}px ${docH * 2.5}px`;
   }
   
   render() {
-    const { visible } = this.state;
+    const { visible, invertStyle } = this.state;
     return (
       <div>
-        <Nav logo="Timothy Jeng" linkTo={this.linkHandler} key="header" />
+        <Nav logo="Timothy Jeng" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />
-          <div className={`--content ${visible === "home" ? "" : "--hidden"}`} id="home">
+          <div className={`--content --small ${visible === "home" ? "" : "--hidden"}`} id="home">
             <Welcome show={visible === "home"} type="fade up" />
           </div>
-          <div className={`--content ${visible === "about" ? "" : "--hidden"}`} id="about">
-            <About show={visible === "about"} />
+          <div className={`--content --medium ${visible === "about" ? "" : "--hidden"}`} id="about">
+            <About show={visible === "about"} type="fade up" />
           </div>
-          <div className={`--content ${visible === "contact" ? "" : "--hidden"}`} id="contact">
-            <Welcome show={visible === "contact"} />
+          <div className={`--content --small ${visible === "contact" ? "" : "--hidden"}`} id="contact">
+            <Welcome show={visible === "contact"} type="fade up" />
           </div>
         </main>
       </div>

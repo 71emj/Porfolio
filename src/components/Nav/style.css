@@ -4,6 +4,12 @@ nav {
   height: 10%;
   padding-right: 1.5%;
   padding-left: 1.5%;
+  -webkit-transition: color linear .5s;
+  -moz-transition: color linear .5s;
+  -ms-transition: color linear .5s;
+  -o-transition: color linear .5s;
+  transition: color linear .5s;
+  
 }
 
 header.masthead.segment {
@@ -15,9 +21,14 @@ nav.ui.huge.menu {
   font-size: 1.05rem;
 }
 
-nav.ui.menu .item {
-  /*color: white;*/
+nav.ui.menu .item.inverted {
+	color: white !important;
 }
+
+nav.ui.menu .item.inverted:not(.header):hover::before {
+	border-bottom: 1.5px solid white !important;
+}
+
 
 nav.ui.menu .item:hover,
 nav.ui.menu .item.active {
@@ -29,7 +40,7 @@ nav.ui.menu .item:not(.header):hover::before {
   position: absolute;
   top: -1.5rem;
   left: 17.5%;
-  border-bottom: 1.5px solid white;
+  border-bottom: 1.5px solid #3e3e3e;
   -webkit-animation: increase .3s;
   -moz-animation: increase .3s;
   -o-animation: increase .3s;

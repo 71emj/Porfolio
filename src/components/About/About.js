@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Segment, Header } from "semantic-ui-react";
 import Banner from "../Banner";
 import "./style.css";
 
@@ -8,15 +9,30 @@ class About extends Component {
 			show: 750,
 			hide: 0
 		};
+		const style = {
+			background: "none",
+			boxShadow: "none",
+			border: "none",
+			textShadow: "#b0b0b0 0 0 1px"
+		};
+
 		return (
 			<Banner
-				key="about"
+				bannerkey="about"
 				show={this.props.show}
 				transition={true}
 				animateType={this.props.type}
 				duration={duration}
 				children={
-					<div>
+					<Segment key="segment" as="div" size="huge" style={style}>
+						<Header as="h1" textAlign={"left"}>
+							About Me
+							<Header.Subheader>
+								Hello there, I'm a North Carolina native now lucky to call
+								Colorado home
+							</Header.Subheader>
+						</Header>
+						<br />
 						<p>
 							Hi there - I'm a North Carolina native now lucky to call Colorado
 							home (fun fact, the sunset picture was taken off Highway 7 in
@@ -31,7 +47,7 @@ class About extends Component {
 							shared with the world to create it a better place. Check out some
 							of my work below!
 						</p>
-					</div>
+					</Segment>
 				}
 			/>
 		);

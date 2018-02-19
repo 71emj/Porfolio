@@ -7,28 +7,55 @@ body {
   height: 100%;
   /*background: linear-gradient(30deg, red, blue);*/
   /*background: linear-gradient(360deg, #fb7070, #005ec5, #004da0);*/
-  background: linear-gradient(#004da0, #00b9c5, #5F4B8B, #d13171, #fb7070, #fdb95e, #ffdf30, #3cff8d);
+  /*background: linear-gradient(#004da0, #00b9c5, #5F4B8B, #d13171, #fb7070, #fdb95e, #ffdf30, #3cff8d);*/
+  background: -webkit-linear-gradient(330deg, #026d88, #dcdddd);
+  background: -o-linear-gradient(330deg, #026d88, #dcdddd);
+  background: linear-gradient(330deg, #026d88, #dcdddd);
   background-position: 50% 0%; 
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: 100%;
-  --webkit-transition: background-position ease .35s;
-  -moz-transition: background-position ease .35s;
-  -ms-transition: background-position ease .35s;
-  -o-transition: background-position ease .35s;
-  transition: background-position ease .35s;
+  --webkit-transition: background-position ease .35s, color linear 1s;
+  -moz-transition: background-position ease .35s, color linear 1s;
+  -ms-transition: background-position ease .35s, color linear 1s;
+  -o-transition: background-position ease .35s, color linear 1s;
+  transition: background-position ease .35s, color linear 1s;
   /*overflow-y: hidden;*/
 }
+
+/*.--gradient.--alt1 {
+  background: -webkit-linear-gradient(300deg, red, blue);
+  background: -o-linear-gradient(300deg, red, blue);
+  background: linear-gradient(30deg, red, blue);
+}
+
+.--gradient.--alt2 {
+  background: -webkit-linear-gradient(330deg, #00b9c5, #5F4B8B);
+  background: -o-linear-gradient(330deg, #00b9c5, #5F4B8B);
+  background: linear-gradient(60deg, #00b9c5, #5F4B8B);
+}*/
 
 .--content {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh;
-  max-width: 420px;
+  /*max-width: 420px;*/
   height: 100%;
   width: 100%;
   margin: auto;
+}
+
+.--content.--small {
+  max-width: 420px;
+}
+
+.--content.--medium {
+  max-width: 630px;
+}
+
+.--content.--large {
+  max-width: 960px;
 }
 
 .--content>img {

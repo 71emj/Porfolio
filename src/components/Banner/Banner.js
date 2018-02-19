@@ -4,10 +4,10 @@ import "./style.css";
 
 class Banner extends Component {
 	render() {
-		const { animateType, show, duration, children, key } = this.props;
+		const { animateType, show, duration, children, bannerkey } = this.props;
 
 		return (
-			<Container as="div" key={key} className="--flex --wrapper">
+			<Container as="div" key={bannerkey} className="--flex --wrapper">
 				<Transition animation={animateType || "fade"} visible={show} duration={duration || 500}>
 						{children}
 				</Transition>

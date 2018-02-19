@@ -10,7 +10,7 @@ class Welcome extends Component {
 		};
 		return (
 			<Banner
-				key="welcome"
+				bannerkey="welcome"
 				show={this.props.show}
 				transition={true}
 				animateType={this.props.type}

@@ -85,7 +85,7 @@ class Nav extends Component {
 		return (
 			<Menu
 				fixed="top"
-				inverted={true}
+				inverted={this.props.invert}
 				borderless={true}
 				size="huge"
 				as="nav"
