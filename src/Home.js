@@ -58,7 +58,7 @@ class Home extends Component {
         params.push("about", winH, 15);
         break;
       case ratio <= 0.9:
-        params.push("contact", winH * 2, 45);
+        params.push("contact", winH * 2, 30, true);
         break;
       default:
         console.log(params);
@@ -83,7 +83,7 @@ class Home extends Component {
         params.push("about", winH, 15);
         break;
       case "contact":
-        params.push("contact", winH * 2, 45);
+        params.push("contact", winH * 2, 30, true);
         break;
       default:
         console.log("nothing");
@@ -109,7 +109,7 @@ class Home extends Component {
         setTimeout(scroll, 250);
         break;
       case valY > 1008 && visible === "about" && flagY >= 10:
-        params.push("contact", winH * 2, 45, true);
+        params.push("contact", winH * 2, 30, true);
         setTimeout(scroll, 250);
         break;
       default:

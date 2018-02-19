@@ -4,12 +4,6 @@ nav {
   height: 10%;
   padding-right: 1.5%;
   padding-left: 1.5%;
-  -webkit-transition: color linear .5s;
-  -moz-transition: color linear .5s;
-  -ms-transition: color linear .5s;
-  -o-transition: color linear .5s;
-  transition: color linear .5s;
-  
 }
 
 header.masthead.segment {
@@ -21,11 +15,19 @@ nav.ui.huge.menu {
   font-size: 1.05rem;
 }
 
-nav.ui.menu .item.inverted {
+nav.ui.menu .item {
+	-webkit-transition: color ease-out .4s;
+  -moz-transition: color ease-out .4s;
+  -ms-transition: color ease-out .4s;
+  -o-transition: color ease-out .4s;
+  transition: color ease-out .4s;
+}
+
+nav.ui.menu.inverted .item {
 	color: white !important;
 }
 
-nav.ui.menu .item.inverted:not(.header):hover::before {
+nav.ui.menu.inverted .item:not(.header):hover::before {
 	border-bottom: 1.5px solid white !important;
 }
 
