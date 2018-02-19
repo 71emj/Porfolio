@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Nav from "./components/Nav";
 import Canvas from "./components/Canvas";
-import Banner from "./components/Banner";
+import Welcome from "./components/Welcome";
+import About from "./components/About";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
@@ -18,15 +19,21 @@ class Home extends Component {
       scrolling: false
     };
   }
-
-  get doms() {
+  
+  get DOMS() {
+    const winH = window.innerHeight;
+    const valY = window.scrollY;
+    return { ...this.DOMrefs, docH: this.docHeight, winH, valY };
+  }
+  
+  get DOMrefs() {
     const body = document.body;
     const html = document.documentElement;
     return { body, html };
   }
 
   get docHeight() {
-    const { body, html } = this.doms;
+    const { body, html } = this.DOMrefs;
     return Math.max(
       body.scrollHeight,
       body.offsetHeight,
@@ -37,10 +44,8 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    const ratio = window.scrollY / this.docHeight;
-    this.adjustBackground();
-    window.addEventListener("resize", this.adjustBackground);
-    window.addEventListener("mousewheel", this.scrollHandler);
+    const { valY, docH, winH } = this.DOMS;
+    const ratio = valY / docH;
 
     const params = new Array();
     switch (true) {
@@ -48,51 +53,61 @@ class Home extends Component {
         params.push("home", 0, 0);
         break;
       case ratio <= 0.6:
-        params.push("about", window.innerHeight, 15)
+        params.push("about", winH, 15);
         break;
       case ratio <= 0.9:
-        params.push("contact", window.innerHeight * 2, 45)
+        params.push("contact", winH * 2, 45);
         break;
       default:
         console.log(params);
     }
+
+    this.adjustBackground();
     this.scroll(...params);
+    window.addEventListener("resize", this.adjustBackground);
+    window.addEventListener("mousewheel", this.scrollHandler);
   }
 
   linkHandler = evt => {
     const { name } = evt.target.dataset;
-    const winH = window.innerHeight;
+    const { winH } = this.DOMS;
+
+    const params = new Array();
     switch (name) {
       case "home":
-        this.scroll("home", 0, 0);
+        params.push("home", 0, 0);
         break;
       case "about":
-        this.scroll("about", winH, 15);
+        params.push("about", winH, 15);
         break;
       case "contact":
-        this.scroll("contact", winH * 2, 45);
+        params.push("contact", winH * 2, 45);
         break;
       default:
         console.log("nothing");
     }
+    this.scroll(...params);
   }
 
   scrollHandler = evt => {
     const { visible, scrolling } = this.state;
-    const winH = window.innerHeight;
-    const valY = window.scrollY;
+    const { winH, valY } = this.DOMS;
     const flagY = evt.deltaY;
-
+    
+    const params = new Array();
     switch (true) {
       case valY < 508 && flagY <= -10 && visible === "about":
-        setTimeout(() => { this.scroll("home", 0, 0); }, 250);
+        params.push("home", 0, 0);
+        setTimeout(() => { this.scroll(...params); }, 250);
         break;
       case visible === "contact" && flagY <= -10:
       case valY > 250 && visible === "home" && flagY >= 10:
-        setTimeout(() => { this.scroll("about", winH, 15); }, 250);
+        params.push("about", winH, 15);
+        setTimeout(() => { this.scroll(...params); }, 250);
         break;
       case valY > 1008 && visible === "about" && flagY >= 10:
-        setTimeout(() => { this.scroll("contact", winH * 2, 45); }, 250);
+        params.push("contact", winH * 2, 45);
+        setTimeout(() => { this.scroll(...params); }, 250);
         break;
       default:
         if (scrolling) {
@@ -117,19 +132,16 @@ class Home extends Component {
   }
 
   gradientScroll = (evt, scrollY) => {
-    const { body } = this.doms;
-    const valY = window.scrollY;
-    const height = this.docHeight;
+    const { body, valY, docH } = this.DOMS;
     if (scrollY) {
       return (body.style.backgroundPosition = `50% ${scrollY}%`);
     }
-    body.style.backgroundPosition = `50% ${valY / height * 100}%`;
+    body.style.backgroundPosition = `50% ${valY / docH * 100}%`;
   }
 
   adjustBackground = evt => {
-    const { body } = this.doms;
-    const height = this.docHeight;
-    body.style.backgroundSize = `${window.innerWidth}px ${height * 2.5}px`;
+    const { body, docH } = this.DOMS;
+    body.style.backgroundSize = `${window.innerWidth}px ${docH * 2.5}px`;
   }
   
   render() {
@@ -140,13 +152,13 @@ class Home extends Component {
         <main key="content">
           <Canvas />
           <div className={`--content ${visible === "home" ? "" : "--hidden"}`} id="home">
-            <Banner show={visible === "home"} />
+            <Welcome show={visible === "home"} type="fade up" />
           </div>
           <div className={`--content ${visible === "about" ? "" : "--hidden"}`} id="about">
-            <Banner show={visible === "about"} />
+            <About show={visible === "about"} />
           </div>
           <div className={`--content ${visible === "contact" ? "" : "--hidden"}`} id="contact">
-            <Banner show={visible === "contact"} />
+            <Welcome show={visible === "contact"} />
           </div>
         </main>
       </div>

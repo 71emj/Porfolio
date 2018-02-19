@@ -63,7 +63,7 @@ class Nav extends Component {
 		) : (
 			<Menu.Menu position="right" key="links">{linkItems}</Menu.Menu>
 		);
-	};
+	}
 
 	main = () => {
 		return (

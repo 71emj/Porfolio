@@ -1,10 +1,47 @@
 import React, { Component } from "react";
 import "./style.css";
 
-const PIXEL_RATIO = function() {
-	const ctx = document.getElementById("canvas").getContext("2d"),
-		dpr = window.devicePixelRatio || 1,
-		bsr =
+class Canvas extends Component {
+	// the constructor might not be neccessary
+	constructor(props) {
+		super(props);
+	}
+
+	get Canvas() {
+		const can = this.canvas ? this.canvas : document.getElementById("canvas");
+		const ctx = this.ctx ? this.ctx : can.getContext("2d");
+		return { can, ctx };
+	}
+
+	componentDidMount() {
+		this.createHighDPICanvas();
+		window.addEventListener("mousemove", evt => this.draw(evt.clientX, evt.clientY));
+		window.addEventListener("resize", evt => this.createHighDPICanvas());
+		window.addEventListener("click", evt => console.log(evt));
+	}
+
+	createHighDPICanvas(ratio) {
+		this.callibrateCanvas = ratio ? ratio : this.PIXEL_RATIO;
+		return this;
+	}
+
+	set callibrateCanvas(ratio) {
+		const { innerWidth: w, innerHeight: h } = window;
+		const { can, ctx } = this.Canvas;
+		can.width = w * ratio;
+		can.height = h * ratio;
+		can.style.width = w + "px";
+		can.style.height = h + "px";
+		ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+		console.log({ w, h, can });
+		this.canvas = can;
+		this.ctx = ctx;
+	}
+
+	get PIXEL_RATIO() {
+		const { ctx } = this.Canvas;
+		const dpr = window.devicePixelRatio || 1;
+		const bsr =
 			ctx.webkitBackingStorePixelRatio ||
 			ctx.mozBackingStorePixelRatio ||
 			ctx.msBackingStorePixelRatio ||
@@ -12,51 +49,20 @@ const PIXEL_RATIO = function() {
 			ctx.backingStorePixelRatio ||
 			1;
 
-	return dpr / bsr;
-};
-
-const createHiDPICanvas = function(ratio) {
-	const { innerWidth: w, innerHeight: h } = window;
-	if (!ratio) {
-		ratio = PIXEL_RATIO();
-	}
-	const can = document.getElementById("canvas");
-	console.log({ w, h, can });
-	can.width = w * ratio;
-	can.height = h * ratio;
-	can.style.width = w + "px";
-	can.style.height = h + "px";
-	can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
-	return can;
-};
-
-class Canvas extends Component {
-	constructor(props) {
-		super(props);
-		this.canvas = "";
-		this.ctx = "";
+		return dpr / bsr;
 	}
 
 	draw(corX, corY) {
-		const ctx = this.ctx;
-		ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		const { ctx, can: canvas } = this.Canvas;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		ctx.beginPath();
 		ctx.fillStyle = "rgba(255,255,255,0.5)";
 		ctx.arc(corX, corY, 10, 0, Math.PI * 2);
 		ctx.fill();
 	}
 
-	componentDidMount() {
-		this.canvas = createHiDPICanvas();
-		this.ctx = this.canvas.getContext("2d");
-		
-		window.onmousemove = evt => { this.draw(evt.clientX, evt.clientY); };
-		window.addEventListener("resize", evt => createHiDPICanvas());
-		window.addEventListener("click", evt => console.log(evt)); 
-	}
-
 	render() {
-		return <canvas id="canvas"></canvas>;
+		return <canvas id="canvas" />;
 	}
 }
 

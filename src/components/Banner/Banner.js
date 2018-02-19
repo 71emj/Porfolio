@@ -4,14 +4,12 @@ import "./style.css";
 
 class Banner extends Component {
 	render() {
+		const { animateType, show, duration, children, key } = this.props;
+
 		return (
-			<Container as="div" key="banner" className="--flex --wrapper">
-				<Transition animation="fade up" visible={this.props.show} duration={{ show: 750, hide: 0 }}>
-					<div>
-						<img src="./assets/img/SVG/screen.svg" className="--monitor" />
-						<img src="./assets/img/SVG/line1.svg" className="--lines" />
-						<img src="./assets/img/SVG/line2.svg" className="--lines" />
-					</div>
+			<Container as="div" key={key} className="--flex --wrapper">
+				<Transition animation={animateType || "fade"} visible={show} duration={duration || 500}>
+						{children}
 				</Transition>
 			</Container>
 		);
