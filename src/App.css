@@ -15,11 +15,11 @@ body {
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: 100%;
-  --webkit-transition: background-position ease .35s, color linear 1s;
-  -moz-transition: background-position ease .35s, color linear 1s;
-  -ms-transition: background-position ease .35s, color linear 1s;
-  -o-transition: background-position ease .35s, color linear 1s;
-  transition: background-position ease .35s, color linear 1s;
+  --webkit-transition: background-position ease-out .35s;
+  -moz-transition: background-position ease-out .35s;
+  -ms-transition: background-position ease-out .35s;
+  -o-transition: background-position ease-out .35s;
+  transition: background-position ease-out .35s;
   /*overflow-y: hidden;*/
 }
 

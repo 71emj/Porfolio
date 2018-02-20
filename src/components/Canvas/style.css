@@ -5,4 +5,9 @@
 canvas {
 	position: fixed;
 	z-index: 10;
+	pointer-events: none;
 }
+
+/*canvas:hover {
+	z-index: -1;
+}*/

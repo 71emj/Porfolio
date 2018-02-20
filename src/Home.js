@@ -150,7 +150,7 @@ class Home extends Component {
     const { visible, invertStyle } = this.state;
     return (
       <div>
-        <Nav logo="Timothy Jeng" linkTo={this.linkHandler} key="header" invert={invertStyle} />
+        <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />
           <div className={`--content --small ${visible === "home" ? "" : "--hidden"}`} id="home">

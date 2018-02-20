@@ -4,6 +4,18 @@ import Banner from "../Banner";
 import "./style.css";
 
 class About extends Component {
+	clickHandler = evt => {
+		evt.preventDefault();
+		console.log(evt.target);
+
+	}
+
+	hover = evt => {
+		console.log("HHHHHHHover");
+		console.log(evt);
+		console.log(evt.target);
+	}
+
 	render() {
 		const duration = {
 			show: 750,
@@ -23,25 +35,28 @@ class About extends Component {
 				transition={true}
 				animateType={this.props.type}
 				duration={duration}
+				hover={this.hover}
 				children={
 					<Segment key="segment" as="div" size="huge" style={style}>
 						<Header as="h1" textAlign={"left"}>
-							Hi,
+							Hello, I'm 71emj
 							<Header.Subheader>
-								My name is Timothy Jeng, and I am a developer, designer, and a
-								stage 5 coffee drinker.
+								full-stack developer and react lover
 							</Header.Subheader>
 						</Header>
 						<br />
 						<p>
-							I am a fully trained web developer, with knowledge in both
-							front and backend technologies. On the backend, I am skilled in
-							designing RESTful API with Node, Express, and MongoDB, user
-							authentication with Passport, JWT and server session; on the
-							frontend, I am proficient with javascript libraries such as
-							jQuery, React, and WebGL as well as CSS frameworks such as
-							Bootstrap and Semantic UI as well
+							I am a full-stack developer living in Charlotte, with love for
+							both UX design and server-side logic. I am also passionate about
+							building computers, making coffee, and learning new technologies.{" "}
+							<br />
+							<br />
+							If you would like to talk about web, technology, or how to build
+							your first computer feel free to connect via
+							<a href="mailto:someone@example.com?Subject=Hello%20again" target="_top"> Email </a>
+							or <a href="https://linkedin.com/in/timothyjeng" target="_blank" > LinkedIn.</a>
 						</p>
+						<br/>
 					</Segment>
 				}
 			/>

@@ -15,7 +15,7 @@ class Canvas extends Component {
 
 	componentDidMount() {
 		this.createHighDPICanvas();
-		window.addEventListener("mousemove", evt => this.draw(evt.clientX, evt.clientY));
+		window.addEventListener("mousemove", this.moveHandler);
 		window.addEventListener("resize", evt => this.createHighDPICanvas());
 		window.addEventListener("click", evt => console.log(evt));
 	}
@@ -52,6 +52,11 @@ class Canvas extends Component {
 		return dpr / bsr;
 	}
 
+	moveHandler = evt => {
+		this.draw(evt.clientX, evt.clientY);
+		this.hover(evt);
+	}
+
 	draw(corX, corY) {
 		const { ctx, can: canvas } = this.Canvas;
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -59,6 +64,10 @@ class Canvas extends Component {
 		ctx.fillStyle = "rgba(255,255,255,0.5)";
 		ctx.arc(corX, corY, 10, 0, Math.PI * 2);
 		ctx.fill();
+	}
+
+	hover(evt) {
+		return;
 	}
 
 	render() {

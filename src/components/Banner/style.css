@@ -16,8 +16,6 @@
 }
 
 .--background {
-	/*position: absolute;*/
-	/*left: 25%;*/
 	width: 100%;
 }
 
@@ -25,8 +23,6 @@
 	position: relative;
 	top: .5rem;
 	margin-top: .5rem;
-	/*height: 3rem;*/
-	/*transform: rotate(-45deg);*/
 }
 
 .visible.transition {
