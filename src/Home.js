@@ -54,13 +54,13 @@ class Home extends Component {
 
     const params = new Array();
     switch (true) {
-      case ratio <= 0.2:
+      case ratio <= 0.25:
         params.push("home", 0, 0);
         break;
-      case ratio <= 0.4:
+      case ratio <= 0.45:
         params.push("about", winH, 15);
         break;
-      case ratio <= 0.6:
+      case ratio <= 0.7:
         params.push("contact", winH * 2, 30, true);
         break;
       default:
@@ -150,7 +150,7 @@ class Home extends Component {
   
   render() {
     const { visible, invertStyle } = this.state;
-    const scrollbarLocation = new Map([["home", 0], ["about", 15], ["contact", 30]]);
+    const scrollbarLocation = new Map([["home", 0], ["about", 25], ["contact", 50]]);
     return (
       <div>
         <ScrollBar domElements={this.DOMS} position={scrollbarLocation.get(visible)} fadeTime={1000}/>

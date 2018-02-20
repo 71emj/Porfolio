@@ -6,22 +6,10 @@ class ScrollBar extends Component {
 	get DOMS() {
 		const scrollbar = document.querySelector(".--scrollbar");
 		const winHeight = window.innerHeight;
-		const docHeight = this.docHeight;
+		const html = document.documentElement;
+		const docHeight = html.offsetHeight;
 		const scrollbarLength = winHeight / docHeight;
 		return { docHeight, scrollbar, scrollbarLength, winHeight };
-	}
-
-	get docHeight() {
-		const body = document.body;
-		const html = document.documentElement;
-		// return html.clientHeight;
-		return Math.max(
-			body.scrollHeight,
-			body.offsetHeight,
-			html.clientHeight,
-			html.scrollHeight,
-			html.offsetHeight
-		);
 	}
 
 	componentDidMount() {
@@ -48,9 +36,11 @@ class ScrollBar extends Component {
 		const { scrollbar, scrollbarLength, winHeight, docHeight } = this.DOMS;
 		const { position } = this.props;
 		console.log(position);
-		const locateScrollbar = position
-			? position - scrollbarLength
-			: position + scrollbarLength;
+		const locateScrollbar = !position
+			? position + scrollbarLength
+			: position < 100
+			? position - scrollbarLength / 2
+			: position - scrollbarLength;
 
 		scrollbar.style.top = `${locateScrollbar}vh`;
 	}
