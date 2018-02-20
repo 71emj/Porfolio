@@ -15,7 +15,8 @@ nav.ui.huge.menu {
   font-size: 1.05rem;
 }
 
-nav.ui.menu .item {
+nav.ui.menu .item,
+a {
 	-webkit-transition: color ease-out .4s;
   -moz-transition: color ease-out .4s;
   -ms-transition: color ease-out .4s;
@@ -30,7 +31,6 @@ nav.ui.menu.inverted .item {
 nav.ui.menu.inverted .item:not(.header):hover::before {
 	border-bottom: 1.5px solid white !important;
 }
-
 
 nav.ui.menu .item:hover,
 nav.ui.menu .item.active {
@@ -55,6 +55,16 @@ nav.ui.menu .header {
   font-family: "Georgia", "sans-serif";
   font-weight: 200 !important;
 }
+
+a {
+  color: #ef3a3a;
+}
+
+a:not(.item):hover,
+a:not(.item):active {
+  color: #ff8787;
+}
+
 
 @keyframes increase {
   to {

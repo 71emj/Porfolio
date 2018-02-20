@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Nav from "./components/Nav";
+import ScrollBar from "./components/ScrollBar";
 import Canvas from "./components/Canvas";
 import Welcome from "./components/Welcome";
 import About from "./components/About";
@@ -48,16 +49,18 @@ class Home extends Component {
   componentDidMount() {
     const { valY, docH, winH } = this.DOMS;
     const ratio = valY / docH;
+    console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+    console.log({ valY, docH, winH });
 
     const params = new Array();
     switch (true) {
-      case ratio <= 0.3:
+      case ratio <= 0.2:
         params.push("home", 0, 0);
         break;
-      case ratio <= 0.6:
+      case ratio <= 0.4:
         params.push("about", winH, 15);
         break;
-      case ratio <= 0.9:
+      case ratio <= 0.6:
         params.push("contact", winH * 2, 30, true);
         break;
       default:
@@ -67,7 +70,7 @@ class Home extends Component {
     this.adjustBackground();
     this.scroll(...params);
     window.addEventListener("resize", this.adjustBackground);
-    window.addEventListener("mousewheel", this.scrollHandler);
+    window.addEventListener("wheel", this.scrollHandler);
   }
 
   linkHandler = evt => {
@@ -97,20 +100,19 @@ class Home extends Component {
     const flagY = evt.deltaY;
     
     const params = new Array();
-    const scroll = () => this.scroll(...params);
     switch (true) {
       case valY < 508 && flagY <= -10 && visible === "about":
         params.push("home", 0, 0);
-        setTimeout(scroll, 250);
+        this.scroll(...params);
         break;
       case visible === "contact" && flagY <= -10:
       case valY > 250 && visible === "home" && flagY >= 10:
         params.push("about", winH, 15);
-        setTimeout(scroll, 250);
+        this.scroll(...params);
         break;
       case valY > 1008 && visible === "about" && flagY >= 10:
         params.push("contact", winH * 2, 30, true);
-        setTimeout(scroll, 250);
+        this.scroll(...params);
         break;
       default:
         if (scrolling) {
@@ -120,25 +122,25 @@ class Home extends Component {
     }
   }
 
-  scroll = (name, valY, posY, setInvert = false) => {
-    console.log({name, valY, posY});
+  scroll = (name, scrollY, backgroundY, setInvert = false) => {
+    // console.log({name, scrollY, backgroundY});
     Promise.resolve(this.setState({ scrolling: true, invertStyle: setInvert })).then(() => {
-      window.scrollTo(0, valY);
-      this.gradientScroll(null, posY);
+      this.gradientScroll(null, backgroundY);
       setTimeout(() => {
+        window.scrollTo(0, scrollY);
         this.setState((state, props) => {
-          console.log(valY);
+          // console.log(scrollY);
           return { visible: name, scrolling: false };
         });
       }, 300);
     });
   }
   
-  gradientScroll = (evt, scrollY, className) => {
+  gradientScroll = (evt, backgroundY, className) => {
     const { body, valY, docH, nav } = this.DOMS;
-    // [scrollY, className] = !isNaN(+scrollY) ? [scrollY, className] : ["", scrollY]; 
+    // [backgroundY, className] = !isNaN(+backgroundY) ? [backgroundY, className] : ["", backgroundY]; 
     // nav.classList = ` ${className}`;
-    body.style.backgroundPosition = `50% ${scrollY}%`;
+    body.style.backgroundPosition = `50% ${backgroundY}%`;
   }
 
   adjustBackground = evt => {
@@ -148,8 +150,10 @@ class Home extends Component {
   
   render() {
     const { visible, invertStyle } = this.state;
+    const scrollbarLocation = new Map([["home", 0], ["about", 15], ["contact", 30]]);
     return (
       <div>
+        <ScrollBar domElements={this.DOMS} position={scrollbarLocation.get(visible)} fadeTime={1000}/>
         <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />

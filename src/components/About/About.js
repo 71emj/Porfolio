@@ -52,9 +52,9 @@ class About extends Component {
 							<br />
 							<br />
 							If you would like to talk about web, technology, or how to build
-							your first computer feel free to connect via
-							<a href="mailto:someone@example.com?Subject=Hello%20again" target="_top"> Email </a>
-							or <a href="https://linkedin.com/in/timothyjeng" target="_blank" > LinkedIn.</a>
+							your first computer feel free to connect via&nbsp;
+							<a href="mailto:someone@example.com?Subject=Hello%20again" target="_top">Email</a>
+							&nbsp;or&nbsp;<a href="https://linkedin.com/in/timothyjeng" target="_blank" >LinkedIn.</a>
 						</p>
 						<br/>
 					</Segment>
