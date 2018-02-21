@@ -5,14 +5,14 @@ import Canvas from "./components/Canvas";
 import Welcome from "./components/Welcome";
 import About from "./components/About";
 import Contact from "./components/Contact";
-import Scroll from "./util/Scroll";
+import DOMScroll from "./util/Scroll";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
 // later will add more pages to the collections
-const scroller = new Scroll();
+const Scroll = new DOMScroll();
 
 
 // transition won't kick in in mobile view....because the event is triggered by mousewheel
@@ -26,9 +26,8 @@ class Home extends Component {
   }
   
   get DOMS() {
-    const winH = window.innerHeight;
     const valY = window.scrollY;
-    return { ...this.DOMrefs, docH: this.docHeight, winH, valY };
+    return { ...this.DOMrefs, docH: this.docHeight, valY };
   }
   
   get DOMrefs() {
@@ -50,7 +49,7 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    const { valY, docH, winH } = this.DOMS;
+    const { valY, docH } = this.DOMS;
     const ratio = valY / docH;
 
     let name = ""
@@ -68,7 +67,7 @@ class Home extends Component {
         console.log("wrong");
     }
 
-    scroller.scrollToPlace({ name }, this.scrollAndUpdateState);
+    Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
     window.addEventListener("scroll", this.scrollHandler);
     window.addEventListener("resize", this.adjustBackground);
@@ -99,13 +98,12 @@ class Home extends Component {
   
   linkHandler = evt => {
     const { name } = evt.target.dataset;
-    const { winH } = this.DOMS;
-    scroller.scrollToPlace({ name }, this.scrollAndUpdateState);
+    Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
   }
 
   scrollHandler = evt => {
     const { visible } = this.state;
-    scroller.scroll({ evt, visible }, this.scrollAndUpdateState);
+    Scroll.scroll({ evt, visible }, this.scrollAndUpdateState);
   }
 
   gradientScroll = backgroundScrollY => {
@@ -114,7 +112,7 @@ class Home extends Component {
   }
 
   adjustBackground = evt => {
-    const { body, docH, winH } = this.DOMS;
+    const { body, docH } = this.DOMS;
     body.style.backgroundSize = `${window.innerWidth}px ${docH * 2.5}px`;
   }
   

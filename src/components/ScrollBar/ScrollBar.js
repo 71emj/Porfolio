@@ -5,17 +5,16 @@ import "./style.css";
 class ScrollBar extends Component {
 	get DOMS() {
 		const scrollbar = document.querySelector(".--scrollbar");
-		const winHeight = window.innerHeight;
 		const winScrollY = window.scrollY;
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
-		const scrollbarLength = winHeight / docHeight;
-		return { scrollbar, scrollbarLength, winHeight, docHeight, winScrollY, html	};
+		const scrollbarLength = window.innerHeight / docHeight;
+		return { scrollbar, scrollbarLength, docHeight, winScrollY, html	};
 	}
 
 	get scrollDist() {
 		const { html, docHeight } = this.DOMS;
-		return this.currentPosition - html.scrollTop) * (100 / docHeight) * 0.5;
+		return (this.currentPosition - html.scrollTop) * (100 / docHeight) * 0.5;
 	}
 
 	get TID() {
@@ -55,7 +54,7 @@ class ScrollBar extends Component {
 	}
 
 	scroll() {
-		const { scrollbar, scrollbarLength, winHeight, winScrollY } = this.DOMS;
+		const { scrollbar, scrollbarLength, winScrollY } = this.DOMS;
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
 		console.log(dist);
@@ -81,7 +80,7 @@ class ScrollBar extends Component {
 	}
 
 	findScrollBarPosition() {
-		const { scrollbar, scrollbarLength, winHeight } = this.DOMS;
+		const { scrollbar, scrollbarLength } = this.DOMS;
 		const { position } = this.props; // updated position
 
 		const locateScrollbar = !position

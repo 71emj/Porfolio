@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import "./style.css";
 
 class Canvas extends Component {
-	// the constructor might not be neccessary
-	constructor(props) {
-		super(props);
-	}
 
 	get Canvas() {
 		const can = this.canvas ? this.canvas : document.getElementById("canvas");
