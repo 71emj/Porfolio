@@ -1,25 +1,22 @@
 // manage scroll and scroll condition
+// ...todo
+// add a similar setState function to update fields
 class DomScroll {
 	constructor() {
-
+		this.state = {
+			name: "",
+			visible: "",
+			scrollName: "",
+			scrollToPosition: "",
+			prevPosition: "",
+			stopScrolling: false
+		};
 	}
 
-  set currentPosition(scrollTop) {
-    this.prevScroll = scrollTop;
-  }
-
-  set scrollParameters(params) {
-  	console.log("this is params");
-  	console.log(params);
-    if (!params) return;
-    const [name, scrollToPosition, curScrollY] = params;
-    this.scrollName = name;
-    this.scrollToPosition = scrollToPosition;
-    this.curScrollY = curScrollY;
-  }
-
-  get prevPosition() {
-    return this.prevScroll;
+  setState(fields) {
+  	const { state } = this;
+  	this.state = Object.assign(state, fields);
+  	return this;
   }
 
   get DOMS() {
@@ -45,81 +42,71 @@ class DomScroll {
     );
   }
 
-  _evaluateCondition({ name, visible }) {
+  _evaluateCondition() {
     const { html, winScrollY, winHeight, docHeight } = this.DOMS;
-    const ratio = winScrollY / winHeight;
-    const scrollDist = this.prevPosition - html.scrollTop;
-    const params = new Array()
+    const { name, visible, prevPosition } = this.state;
 
+    const ratio = winScrollY / winHeight;
+    const scrollDist = prevPosition - html.scrollTop;
+    const params = { prevPosition: html.scrollTop };
     console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name });
 
     switch (true) {
-      // case ratio <= 0.2:
-      // case name === "home":
-      case visible === "about" && winScrollY < 508 /*&& scrollDist <= -10*/ :
+      case ratio <= 0.2:
+      case name === "home":
+      case visible === "about" && winScrollY < winHeight - 150 && scrollDist >= 50:
      		console.log("home condition");
-        params.push("home", 0);
-        this.scrollParameters = params;
+        params.scrollName = "home";
+        params.scrollToPosition = 0;
+        this.setState(params);
         break;
-        // case ratio <= 0.4:
-        // case name === "about":
-      case visible === "contact" /*&& scrollDist <= -10*/:
-      case visible === "home" && winScrollY > 250 /*&& scrollDist >= 10*/ :
+      case ratio <= 0.4:
+      case name === "about":
+      case visible === "contact" && winScrollY < winHeight * 2 - 150 && scrollDist >= 50:
+      case visible === "home" && winScrollY > 150 && scrollDist <= -50:
      		console.log("about condition");
-        params.push("about", winHeight);
-        this.scrollParameters = params;
+        params.scrollName = "about";
+        params.scrollToPosition = winHeight;
+        this.setState(params);
         break;
-        // case ratio <= 0.6:
-        // case name === "contact":
-      case visible === "about" && winScrollY > 1008 /*&& scrollDist >= 10*/:
+      case ratio <= 0.6:
+      case name === "contact":
+      case visible === "about" && winScrollY > winHeight + 150 && scrollDist <= -50:
      		console.log("contact condition");
-        params.push("contact", winHeight * 2);
-        this.scrollParameters = params;
+        params.scrollName = "contact";
+        params.scrollToPosition = winHeight * 2;
+        this.setState(params);
         break;
       default:
         console.log("nothing");
     }
-    // console.log("===========================");
-    // console.log(params);
-    // // return [...params, html.scrollTop];
-    return this;
   }
 
   scroll({ evt, visible, name }, callback) {
-    this.visible = visible || this.visible;
-    this.name = name || this.name;
+    const { stopScrolling } = this.state;
+    if (stopScrolling) {
+    	return evt.preventDefault();
+    }
 
-    console.log({ visible, name });
+    this.setState({ 
+    	name: name, 
+    	visible: visible 
+    });
+
     clearTimeout(this.timeoutId);
-
     this.timeoutId = setTimeout(() => {
-      console.log({ visible, name });
-      // console.log(this.visible);
-      // console.log(this.timeoutId);
-			this._evaluateCondition({ visible: this.visible, name: this.name });
-      const { scrollName, scrollToPosition, curScrollY } = this;
-      console.log("==========================");
-      console.log(scrollToPosition);
+			this._evaluateCondition();
+			
+      const { scrollName, scrollToPosition, curScrollY } = this.state;
+      console.log(this.state);
       window.scrollTo(0, scrollToPosition);
-      
-      clearTimeout(this.timeoutId);
-      this.currentPosition = curScrollY;
-      
+      this.setState({ prevPosition: this.DOMS.winScrollY, stopScrolling: true });
+      setTimeout(() => {
+      	this.setState({ stopScrolling: false });
+      }, 200);
       callback(scrollName);
-    }, 1000);
-
-    // return new Promise((resolve, reject) => {
-    // 	console.log(params);
-    // 	const [ name, scrollToPosition, curScrollY ] = params;
-    // 	console.log("]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]");
-    // 	console.log(scrollToPosition);
-    // 	window.scrollTo(0, scrollToPosition);
-    // 	this.currentPosition = curScrollY;
-    // 	resolve(name);
-    // });
+    }, 50);
   }
-
-  // _startScrolling()
 }
 
 export default DomScroll;
