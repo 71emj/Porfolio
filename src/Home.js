@@ -4,12 +4,16 @@ import ScrollBar from "./components/ScrollBar";
 import Canvas from "./components/Canvas";
 import Welcome from "./components/Welcome";
 import About from "./components/About";
+import Contact from "./components/Contact";
+import Scroll from "./util/Scroll";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
 // later will add more pages to the collections
+const scroller = new Scroll();
+
 
 // transition won't kick in in mobile view....because the event is triggered by mousewheel
 class Home extends Component {
@@ -69,8 +73,9 @@ class Home extends Component {
 
     this.adjustBackground();
     this.scroll(...params);
+    window.addEventListener("scroll", this.scrollHandler);
     window.addEventListener("resize", this.adjustBackground);
-    window.addEventListener("wheel", this.scrollHandler);
+    // window.addEventListener("wheel", this.scrollHandler);
   }
 
   linkHandler = evt => {
@@ -96,31 +101,84 @@ class Home extends Component {
 
   scrollHandler = evt => {
     const { visible, scrolling } = this.state;
-    const { winH, valY } = this.DOMS;
-    const flagY = evt.deltaY;
     
-    const params = new Array();
-    switch (true) {
-      case valY < 508 && flagY <= -10 && visible === "about":
-        params.push("home", 0, 0);
-        this.scroll(...params);
-        break;
-      case visible === "contact" && flagY <= -10:
-      case valY > 250 && visible === "home" && flagY >= 10:
-        params.push("about", winH, 15);
-        this.scroll(...params);
-        break;
-      case valY > 1008 && visible === "about" && flagY >= 10:
-        params.push("contact", winH * 2, 30, true);
-        this.scroll(...params);
-        break;
-      default:
-        if (scrolling) {
-          evt.preventDefault();
-          console.log("stop scrolling");
-        }
+    let backgroundScrollY = 0;
+    
+    const callback = name => {
+      console.log(name);
+      const updateFields = { visible: name };
+      switch (name) {
+        case "home":
+        case "about":
+          backgroundScrollY = name === "home" ? 0 : 15;
+          break;
+        case "portfolio":
+        case "contact":
+          backgroundScrollY = name === "portfolio" ? 30 : 45;
+          updateFields.invertStyle = true;
+          break;
+        default:
+          console.log("something wrong");
+      }
+      return this.scrollAndSetState(updateFields, backgroundScrollY);
     }
+
+    scroller.scroll({ evt, visible }, callback);
+    
+
+      // .then(name => {
+      //   console.log(name);
+      //   const updateFields = { visible: name };
+      //   switch (name) {
+      //     case "home":
+      //     case "about":
+      //       backgroundScrollY = name === "home" ? 0 : 15;
+      //       break;
+      //     case "portfolio":
+      //     case "contact":
+      //       backgroundScrollY = name === "portfolio" ? 30 : 45;
+      //       updateFields.invertStyle = true;
+      //       break;
+      //     default:
+      //       console.log("something wrong");
+      //   }
+      //   return this.scrollAndSetState(updateFields, backgroundScrollY);
+      // });
   }
+
+  // scrollHandler = evt => {
+  //   const { visible, scrolling } = this.state;
+  //   const { winH, valY } = this.DOMS;
+  //   const flagY = evt.deltaY;
+    
+  //   const params = new Array();
+  //   switch (true) {
+  //     case valY < 508 && flagY <= -10 && visible === "about":
+  //       params.push("home", 0, 0);
+  //       this.scroll(...params);
+  //       break;
+  //     case visible === "contact" && flagY <= -10:
+  //     case valY > 250 && visible === "home" && flagY >= 10:
+  //       params.push("about", winH, 15);
+  //       this.scroll(...params);
+  //       break;
+  //     case valY > 1008 && visible === "about" && flagY >= 10:
+  //       params.push("contact", winH * 2, 30, true);
+  //       this.scroll(...params);
+  //       break;
+  //     default:
+  //       if (scrolling) {
+  //         evt.preventDefault();
+  //         console.log("stop scrolling");
+  //       }
+  //   }
+  // }
+  scrollAndSetState(updateFields, backgroundScrollY) {
+    console.log({ updateFields, backgroundScrollY });
+    this.gradientScroll(backgroundScrollY);
+    this.setState(updateFields);
+  }
+
 
   scroll = (name, scrollY, backgroundY, setInvert = false) => {
     // console.log({name, scrollY, backgroundY});
@@ -136,11 +194,9 @@ class Home extends Component {
     });
   }
   
-  gradientScroll = (evt, backgroundY, className) => {
-    const { body, valY, docH, nav } = this.DOMS;
-    // [backgroundY, className] = !isNaN(+backgroundY) ? [backgroundY, className] : ["", backgroundY]; 
-    // nav.classList = ` ${className}`;
-    body.style.backgroundPosition = `50% ${backgroundY}%`;
+  gradientScroll = backgroundScrollY => {
+    const { body } = this.DOMS;
+    body.style.backgroundPosition = `50% ${backgroundScrollY}%`;
   }
 
   adjustBackground = evt => {
@@ -164,12 +220,15 @@ class Home extends Component {
             <About show={visible === "about"} type="fade up" />
           </div>
           <div className={`--content --small ${visible === "contact" ? "" : "--hidden"}`} id="contact">
-            <Welcome show={visible === "contact"} type="fade up" />
+            <Contact show={visible === "contact"} type="fade up" />
           </div>
         </main>
       </div>
     );
   }
 }
+
+/// move wrappers to individual page, make it into a Body component...modularize it by passing content as children
+/// ...might need ternary to detect children's presence or it might work simply calling this.props.children
 
 export default Home;

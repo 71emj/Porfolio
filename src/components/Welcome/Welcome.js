@@ -4,17 +4,13 @@ import "./style.css";
 
 class Welcome extends Component {
 	render() {
-		const duration = {
-			show: 500,
-			hide: 0
-		};
 		return (
 			<Banner
 				bannerkey="welcome"
 				show={this.props.show}
 				transition={true}
 				animateType={this.props.type}
-				duration={duration}
+				duration={{ show: 500, hide: 0 }}
 				children={
 					<div>
 						<img src="./assets/img/SVG/screen.svg" className="--monitor" />
