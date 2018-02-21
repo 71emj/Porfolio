@@ -53,97 +53,52 @@ class Home extends Component {
   componentDidMount() {
     const { valY, docH, winH } = this.DOMS;
     const ratio = valY / docH;
-    console.log("LLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-    console.log({ valY, docH, winH });
 
-    const params = new Array();
+    let name = ""
     switch (true) {
       case ratio <= 0.25:
-        params.push("home", 0, 0);
+        name = "home";
         break;
       case ratio <= 0.45:
-        params.push("about", winH, 15);
+        name = "about";
         break;
       case ratio <= 0.7:
-        params.push("contact", winH * 2, 30, true);
+        name = "contact";
         break;
       default:
-        console.log(params);
+        console.log("wrong");
     }
 
+    scroller.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
-    this.scroll(...params);
     window.addEventListener("scroll", this.scrollHandler);
     window.addEventListener("resize", this.adjustBackground);
-    // window.addEventListener("wheel", this.scrollHandler);
   }
 
   linkHandler = evt => {
     const { name } = evt.target.dataset;
     const { winH } = this.DOMS;
-
-    const params = new Array();
-    switch (name) {
-      case "home":
-        params.push("home", 0, 0);
-        break;
-      case "about":
-        params.push("about", winH, 15);
-        break;
-      case "contact":
-        params.push("contact", winH * 2, 30, true);
-        break;
-      default:
-        console.log("nothing");
-    }
-    this.scroll(...params);
+    scroller.scrollToPlace({ name }, this.scrollAndUpdateState);
+    // const params = new Array();
+    // switch (name) {
+    //   case "home":
+    //     params.push("home", 0, 0);
+    //     break;
+    //   case "about":
+    //     params.push("about", winH, 15);
+    //     break;
+    //   case "contact":
+    //     params.push("contact", winH * 2, 30, true);
+    //     break;
+    //   default:
+    //     console.log("nothing");
+    // }
+    // this.scroll(...params);
   }
 
   scrollHandler = evt => {
     const { visible, scrolling } = this.state;
-    
-    let backgroundScrollY = 0;
-    
-    const callback = name => {
-      console.log(name);
-      const updateFields = { visible: name };
-      switch (name) {
-        case "home":
-        case "about":
-          backgroundScrollY = name === "home" ? 0 : 15;
-          break;
-        case "portfolio":
-        case "contact":
-          backgroundScrollY = name === "portfolio" ? 30 : 45;
-          updateFields.invertStyle = true;
-          break;
-        default:
-          console.log("something wrong");
-      }
-      return this.scrollAndSetState(updateFields, backgroundScrollY);
-    }
-
-    scroller.scroll({ evt, visible }, callback);
-    
-
-      // .then(name => {
-      //   console.log(name);
-      //   const updateFields = { visible: name };
-      //   switch (name) {
-      //     case "home":
-      //     case "about":
-      //       backgroundScrollY = name === "home" ? 0 : 15;
-      //       break;
-      //     case "portfolio":
-      //     case "contact":
-      //       backgroundScrollY = name === "portfolio" ? 30 : 45;
-      //       updateFields.invertStyle = true;
-      //       break;
-      //     default:
-      //       console.log("something wrong");
-      //   }
-      //   return this.scrollAndSetState(updateFields, backgroundScrollY);
-      // });
+    scroller.scroll({ evt, visible }, this.scrollAndUpdateState);
   }
 
   // scrollHandler = evt => {
@@ -173,26 +128,48 @@ class Home extends Component {
   //       }
   //   }
   // }
-  scrollAndSetState(updateFields, backgroundScrollY) {
-    console.log({ updateFields, backgroundScrollY });
-    this.gradientScroll(backgroundScrollY);
-    this.setState(updateFields);
+  // scrollAndSetState(updateFields, backgroundScrollY) {
+  //   console.log({ updateFields, backgroundScrollY });
+  //   this.gradientScroll(backgroundScrollY);
+  //   this.setState(updateFields);
+  // }
+
+  scrollAndUpdateState = name => {
+      const updateFields = { visible: name };
+      let backgroundScrollY = 0;
+
+      switch (name) {
+        case "home":
+        case "about":
+          backgroundScrollY = name === "home" ? 0 : 15;
+          break;
+        case "portfolio":
+        case "contact":
+          backgroundScrollY = name === "portfolio" ? 30 : 45;
+          updateFields.invertStyle = true;
+          break;
+        default:
+          console.log("something wrong");
+      }
+
+      this.gradientScroll(backgroundScrollY);
+      this.setState(updateFields);
+      // this.scrollAndSetState(updateFields, backgroundScrollY);
   }
 
-
-  scroll = (name, scrollY, backgroundY, setInvert = false) => {
-    // console.log({name, scrollY, backgroundY});
-    Promise.resolve(this.setState({ scrolling: true, invertStyle: setInvert })).then(() => {
-      this.gradientScroll(null, backgroundY);
-      setTimeout(() => {
-        window.scrollTo(0, scrollY);
-        this.setState((state, props) => {
-          // console.log(scrollY);
-          return { visible: name, scrolling: false };
-        });
-      }, 300);
-    });
-  }
+  // scroll = (name, scrollY, backgroundY, setInvert = false) => {
+  //   // console.log({name, scrollY, backgroundY});
+  //   Promise.resolve(this.setState({ scrolling: true, invertStyle: setInvert })).then(() => {
+  //     this.gradientScroll(null, backgroundY);
+  //     setTimeout(() => {
+  //       window.scrollTo(0, scrollY);
+  //       this.setState((state, props) => {
+  //         // console.log(scrollY);
+  //         return { visible: name, scrolling: false };
+  //       });
+  //     }, 300);
+  //   });
+  // }
   
   gradientScroll = backgroundScrollY => {
     const { body } = this.DOMS;

@@ -1,28 +1,20 @@
 // manage scroll and scroll condition
-// ...todo
-// add a similar setState function to update fields
 class DomScroll {
-	constructor() {
-		this.state = {
-			name: "",
-			visible: "",
-			scrollName: "",
-			scrollToPosition: "",
-			prevPosition: "",
-			stopScrolling: false
-		};
-	}
-
-  setState(fields) {
-  	const { state } = this;
-  	this.state = Object.assign(state, fields);
-  	return this;
+  constructor() {
+    this.state = {
+      visible: "",
+      scrollName: "",
+      scrollToPosition: "",
+      prevPosition: "",
+      stopScrolling: false,
+      didUpdate: false
+    };
   }
 
   get DOMS() {
     const winHeight = window.innerHeight;
     const winScrollY = window.scrollY;
-    return { docHeight: this.docHeight, ...this.docElements, winHeight, winScrollY };
+    return { ...this.docElements, winHeight, winScrollY };
   }
 
   get docElements() {
@@ -31,80 +23,88 @@ class DomScroll {
     return { body, html };
   }
 
-  get docHeight() {
-    const { body, html } = this.docElements;
-    return Math.max(
-      body.scrollHeight,
-      body.offsetHeight,
-      html.clientHeight,
-      html.scrollHeight,
-      html.offsetHeight
-    );
+  scroll({ evt, visible }, callback) {
+    const { stopScrolling } = this.state;
+    if (stopScrolling) {
+      return evt.preventDefault();
+    }
+
+    this._setState({ visible: visible || this.visible });
+
+    clearTimeout(this.timeoutId);
+    this.timeoutId = setTimeout(() => {
+      this._evaluateCondition(this.state);
+      const { scrollName, scrollToPosition, didUpdate } = this.state;
+
+      if (didUpdate) {
+        window.scrollTo(0, scrollToPosition);
+        this._pauseScrolling();
+      }
+
+      this._setState({ prevPosition: this.DOMS.winScrollY });
+      callback(scrollName);
+    }, 50);
   }
 
-  _evaluateCondition() {
-    const { html, winScrollY, winHeight, docHeight } = this.DOMS;
-    const { name, visible, prevPosition } = this.state;
+  scrollToPlace({ name }, callback) {
+    this._evaluateCondition({ name });
+    const { scrollToPosition, didUpdate } = this.state;
 
+    if (didUpdate) {
+      window.scrollTo(0, scrollToPosition);
+      this._pauseScrolling();
+    }
+
+    this._setState({ prevPosition: this.DOMS.winScrollY });
+    callback(name);
+  }
+
+  _setState(fields) {
+    const { state } = this;
+    this.state = Object.assign(state, fields);
+  }
+
+  _evaluateCondition({ visible, name }) {
+    const { html, winScrollY, winHeight } = this.DOMS;
+    const { prevPosition } = this.state;
     const ratio = winScrollY / winHeight;
     const scrollDist = prevPosition - html.scrollTop;
-    const params = { prevPosition: html.scrollTop };
+    const params = new Array();
+    const updateFields = { prevPosition: html.scrollTop };
+
+    const addToFields = additionalUpdate => {
+      const [scrollName, scrollToPosition, didUpdate] = additionalUpdate;
+      return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
+    };
+
     console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name });
 
     switch (true) {
-      case ratio <= 0.2:
       case name === "home":
-      case visible === "about" && winScrollY < winHeight - 150 && scrollDist >= 50:
-     		console.log("home condition");
-        params.scrollName = "home";
-        params.scrollToPosition = 0;
-        this.setState(params);
+      case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 5:
+        params.push("home", 0, true);
+        this._setState(addToFields(params));
         break;
-      case ratio <= 0.4:
       case name === "about":
-      case visible === "contact" && winScrollY < winHeight * 2 - 150 && scrollDist >= 50:
-      case visible === "home" && winScrollY > 150 && scrollDist <= -50:
-     		console.log("about condition");
-        params.scrollName = "about";
-        params.scrollToPosition = winHeight;
-        this.setState(params);
+      case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 5:
+      case visible === "home" && winScrollY > 200 && scrollDist <= -5:
+        params.push("about", winHeight, true);
+        this._setState(addToFields(params));
         break;
-      case ratio <= 0.6:
       case name === "contact":
-      case visible === "about" && winScrollY > winHeight + 150 && scrollDist <= -50:
-     		console.log("contact condition");
-        params.scrollName = "contact";
-        params.scrollToPosition = winHeight * 2;
-        this.setState(params);
+      case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -5:
+        params.push("contact", winHeight * 2, true);
+        this._setState(addToFields(params));
         break;
       default:
         console.log("nothing");
     }
   }
 
-  scroll({ evt, visible, name }, callback) {
-    const { stopScrolling } = this.state;
-    if (stopScrolling) {
-    	return evt.preventDefault();
-    }
-
-    this.setState({ 
-    	name: name, 
-    	visible: visible 
-    });
-
-    clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(() => {
-			this._evaluateCondition();
-			
-      const { scrollName, scrollToPosition, curScrollY } = this.state;
-      console.log(this.state);
-      window.scrollTo(0, scrollToPosition);
-      this.setState({ prevPosition: this.DOMS.winScrollY, stopScrolling: true });
-      setTimeout(() => {
-      	this.setState({ stopScrolling: false });
-      }, 200);
-      callback(scrollName);
+  _pauseScrolling() {
+    this._setState({ stopScrolling: true });
+    setTimeout(() => {
+      this._setState({ stopScrolling: false });
     }, 50);
   }
 }
