@@ -1,5 +1,5 @@
-import SmoothScroll from "smoothscroll-polyfill";
-SmoothScroll.polyfill();
+/*import SmoothScroll from "smoothscroll-polyfill";
+SmoothScroll.polyfill();*/
 
 // manage scroll and scroll condition
 class DomScroll {
@@ -59,7 +59,7 @@ class DomScroll {
     const positions = [0, winHeight, winHeight * 2];
     const positionIsPrecise = positions.reduce((sum, val) => {
     	const scrollY =  Math.ceil(winScrollY);
-      return val === 0 ? (scrollY == val ? sum + 1 :  0) : (scrollY == val ? sum + val : 0);
+      return val === 0 ? (scrollY === val ? sum + 1 : sum) : (scrollY === val ? sum + val : sum);
     }, 0);
 
 
@@ -81,7 +81,6 @@ class DomScroll {
   _evaluateCondition({ visible, name }) {
     const { html, winScrollY, winHeight } = this.DOMS;
     const { prevPosition } = this.state;
-    const ratio = winScrollY / winHeight;
     const scrollDist = prevPosition - html.scrollTop;
     const params = new Array();
     const updateFields = { prevPosition: html.scrollTop };

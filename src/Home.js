@@ -21,8 +21,7 @@ class Home extends Component {
     super(props);
     this.state = {
       visible: "",
-      invertStyle: false,
-      scrolling: false
+      invertStyle: false
     };
   }
   
@@ -105,7 +104,7 @@ class Home extends Component {
   }
 
   scrollHandler = evt => {
-    const { visible, scrolling } = this.state;
+    const { visible } = this.state;
     scroller.scroll({ evt, visible }, this.scrollAndUpdateState);
   }
 
