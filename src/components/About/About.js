@@ -45,7 +45,7 @@ class About extends Component {
 				show={this.props.show}
 				transition={true}
 				animateType={this.props.type}
-				duration={{ show: 750, hide: 0 }}
+				duration={{ show: 500, hide: 0 }}
 				hover={this.hover}
 				children={this.content()}
 			/>

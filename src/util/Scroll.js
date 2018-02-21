@@ -1,3 +1,6 @@
+import SmoothScroll from "smoothscroll-polyfill";
+SmoothScroll.polyfill();
+
 // manage scroll and scroll condition
 class DomScroll {
   constructor() {
@@ -7,7 +10,8 @@ class DomScroll {
       scrollToPosition: "",
       prevPosition: "",
       stopScrolling: false,
-      didUpdate: false
+      didUpdate: false,
+      nameValAsFlag: false
     };
   }
 
@@ -34,14 +38,16 @@ class DomScroll {
     clearTimeout(this.timeoutId);
     this.timeoutId = setTimeout(() => {
       this._evaluateCondition(this.state);
-      const { scrollName, scrollToPosition, didUpdate } = this.state;
+      const { scrollName, scrollToPosition, didUpdate, nameValAsFlag } = this.state;
 
-      if (didUpdate) {
+      if (didUpdate || nameValAsFlag) {
+        console.log("updated");
         window.scrollTo(0, scrollToPosition);
-        this._pauseScrolling();
+        this._pauseScrolling(100);
       }
 
-      this._setState({ prevPosition: this.DOMS.winScrollY });
+      console.log("noooot");
+      this._setState({ prevPosition: this.DOMS.winScrollY, nameValAsFlag: false });
       callback(scrollName);
     }, 50);
   }
@@ -49,13 +55,21 @@ class DomScroll {
   scrollToPlace({ name }, callback) {
     this._evaluateCondition({ name });
     const { scrollToPosition, didUpdate } = this.state;
+    const { winScrollY, winHeight } = this.DOMS;
+    const positions = [0, winHeight, winHeight * 2];
+    const positionIsPrecise = positions.reduce((sum, val) => {
+    	const scrollY =  Math.ceil(winScrollY);
+      return val === 0 ? (scrollY == val ? sum + 1 :  0) : (scrollY == val ? sum + val : 0);
+    }, 0);
+
 
     if (didUpdate) {
       window.scrollTo(0, scrollToPosition);
-      this._pauseScrolling();
+      this._pauseScrolling(0);
     }
 
-    this._setState({ prevPosition: this.DOMS.winScrollY });
+    console.log(positionIsPrecise);
+    this._setState({ prevPosition: this.DOMS.winScrollY, nameValAsFlag: !positionIsPrecise });
     callback(name);
   }
 
@@ -77,22 +91,22 @@ class DomScroll {
       return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
     };
 
-    console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name });
+    console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
 
     switch (true) {
       case name === "home":
-      case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 5:
+      case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25:
         params.push("home", 0, true);
         this._setState(addToFields(params));
         break;
       case name === "about":
-      case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 5:
-      case visible === "home" && winScrollY > 200 && scrollDist <= -5:
+      case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25:
+      case visible === "home" && winScrollY > 200 && scrollDist <= -25:
         params.push("about", winHeight, true);
         this._setState(addToFields(params));
         break;
       case name === "contact":
-      case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -5:
+      case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25:
         params.push("contact", winHeight * 2, true);
         this._setState(addToFields(params));
         break;
@@ -101,11 +115,11 @@ class DomScroll {
     }
   }
 
-  _pauseScrolling() {
+  _pauseScrolling(duration) {
     this._setState({ stopScrolling: true });
     setTimeout(() => {
-      this._setState({ stopScrolling: false });
-    }, 50);
+      this._setState({ stopScrolling: false, didUpdate: false });
+    }, duration);
   }
 }
 

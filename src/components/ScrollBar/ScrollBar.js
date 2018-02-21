@@ -9,7 +9,13 @@ class ScrollBar extends Component {
 		const html = document.documentElement;
 		const docHeight = html.offsetHeight;
 		const scrollbarLength = winHeight / docHeight;
-		return { docHeight, scrollbar, scrollbarLength, winHeight };
+		return { scrollbar, scrollbarLength, winHeight, html };
+	}
+
+	get scrollDist() {
+		// const { html, }
+		// currentPosition is windowScrollY
+		return this.currentPosition - this.DOMS.html.scrollTop;
 	}
 
 	componentDidMount() {
@@ -28,12 +34,22 @@ class ScrollBar extends Component {
 		}
 	}
 
+	componentWillUpdate() {
+		this.scroll();
+	}
+
 	componentDidUpdate() {
 		this.findScrollBarPosition();
 	}
 
+	scroll() {
+		const { scrollbar, scrollbarLength, winHeight } = this.DOMS;
+		const { position } = this.props; // previous position
+
+	}
+
 	findScrollBarPosition() {
-		const { scrollbar, scrollbarLength, winHeight, docHeight } = this.DOMS;
+		const { scrollbar, scrollbarLength, winHeight } = this.DOMS;
 		const { position } = this.props;
 		console.log(position);
 		const locateScrollbar = !position

@@ -10,7 +10,7 @@ class Welcome extends Component {
 				show={this.props.show}
 				transition={true}
 				animateType={this.props.type}
-				duration={{ show: 500, hide: 0 }}
+				duration={{ show: 750, hide: 0 }}
 				children={
 					<div>
 						<img src="./assets/img/SVG/screen.svg" className="--monitor" />
