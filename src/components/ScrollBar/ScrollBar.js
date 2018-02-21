@@ -6,21 +6,24 @@ class ScrollBar extends Component {
 	get DOMS() {
 		const scrollbar = document.querySelector(".--scrollbar");
 		const winHeight = window.innerHeight;
+		const winScrollY = window.scrollY;
 		const html = document.documentElement;
-		const docHeight = html.offsetHeight;
+		const docHeight = html.scrollHeight;
 		const scrollbarLength = winHeight / docHeight;
-		return { scrollbar, scrollbarLength, winHeight, html };
+		return { scrollbar, scrollbarLength, winHeight, docHeight, winScrollY, html };
 	}
 
 	get scrollDist() {
-		// const { html, }
+		const { html, winHeight, docHeight } = this.DOMS;
 		// currentPosition is windowScrollY
-		return this.currentPosition - this.DOMS.html.scrollTop;
+		console.log(winHeight);
+		return (this.currentPosition - html.scrollTop) * 100 / docHeight;
 	}
 
 	componentDidMount() {
-		const { scrollbar, scrollbarLength } = this.DOMS;
+		const { scrollbar, scrollbarLength, winScrollY } = this.DOMS;
 		scrollbar.style.height = scrollbarLength;
+		this.currentPosition = winScrollY
 		this.findScrollBarPosition();
 		window.addEventListener("scroll", this.displayScrollbar);
 	}
@@ -32,22 +35,28 @@ class ScrollBar extends Component {
 			setOpacity(1);
 			setTimeout(setOpacity, this.props.fadeTime);
 		}
-	}
-
-	componentWillUpdate() {
-		this.scroll();
-	}
-
-	componentDidUpdate() {
-		this.findScrollBarPosition();
+		// this.scroll();
 	}
 
 	scroll() {
-		const { scrollbar, scrollbarLength, winHeight } = this.DOMS;
+		const { scrollbar, scrollbarLength, winHeight, winScrollY } = this.DOMS;
 		const { position } = this.props; // previous position
+		// const locateScrollbar = position - this.scrollDist;
+		const locateScrollbar = !position
+			? position + scrollbarLength - this.scrollDist
+			: position < 100
+			? position - scrollbarLength / 2 - this.scrollDist
+			: position - scrollbarLength - this.scrollDist;
 
+		console.log({ position, s: this.scrollDist, locateScrollbar });
+		this.currentPosition = winScrollY;
+		scrollbar.style.top = `${locateScrollbar}vh`;
 	}
-
+	
+	componentDidUpdate() {
+		this.findScrollBarPosition();
+	}
+	
 	findScrollBarPosition() {
 		const { scrollbar, scrollbarLength, winHeight } = this.DOMS;
 		const { position } = this.props;
