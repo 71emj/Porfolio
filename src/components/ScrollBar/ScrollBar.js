@@ -3,18 +3,21 @@ import "./style.css";
 
 // scrollbar is only a view element, i.e. no logic
 class ScrollBar extends Component {
+
 	get DOMS() {
 		const scrollbar = document.querySelector(".--scrollbar");
-		const winScrollY = window.scrollY;
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
 		const scrollbarLength = window.innerHeight / docHeight;
-		return { scrollbar, scrollbarLength, docHeight, winScrollY, html	};
+		return { scrollbar, scrollbarLength, docHeight, html };
 	}
 
 	get scrollDist() {
 		const { html, docHeight } = this.DOMS;
-		return (this.currentPosition - html.scrollTop) * (100 / docHeight) * 0.5;
+		const { position } = this.props;
+		const scrollTop = html.scrollTop;
+		const scroll = this.prevScroll <= html.scrollTop ? position - scrollTop : scrollTop - position;
+		return scroll * (100 / docHeight) * 0.5;
 	}
 
 	get TID() {
@@ -26,22 +29,23 @@ class ScrollBar extends Component {
 	}
 
 	componentDidMount() {
-		const { scrollbar, scrollbarLength, winScrollY } = this.DOMS;
+		const { scrollbar, scrollbarLength } = this.DOMS;
 		scrollbar.style.height = scrollbarLength;
-		this.currentPosition = winScrollY;
+		this.prevScroll = window.scrollY;
 		this.findScrollBarPosition();
 		window.addEventListener("scroll", this.throttledScrollEvent);
 	}
 
 	throttledScrollEvent = evt => {
-		const timeoutId = this.TID;
-
-		if (timeoutId) {
+		if (this.TID) {
 			return;
 		}
-
 		// the purpose is to keep event from firing too many times
-		this.TID = setTimeout(() => { this.TID = null }, this.props.fadeTime * 0.9); 
+		this.TID = setTimeout(() => {
+			this.prevScroll = window.scrollY;
+			this.TID = null;
+		}, this.props.fadeTime * 0.9); 
+
 		this.displayScrollbar(evt);
 		this.scroll();
 	}
@@ -57,21 +61,22 @@ class ScrollBar extends Component {
 		const { scrollbar, scrollbarLength, winScrollY } = this.DOMS;
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
+		console.log("WE WILL READ THIS ONLY");
 		console.log(dist);
+		console.log("=======================================");
 
 		const locateScrollbar = !position
-			? position + scrollbarLength + (dist <= 0 ? 0 : dist)
+			? position + scrollbarLength - (dist <= 0.5 ? 5 : 10)
 			: position < 100
-			? position - scrollbarLength / 2 + dist
-			: position - scrollbarLength + (dist <= 0 ? dist : 0);
+			? position - scrollbarLength / 2 + (dist / 2 < 5 ? 5 : (dist / 2)) 
+			: position - scrollbarLength - (dist <= 0 ? dist : 0);
 
 		const containScrollbar = locateScrollbar >= 100 
 			? 100 - scrollbarLength 
-			: locateScrollbar <= 0 
-			? 0 + scrollbarLength
+			: locateScrollbar <= -15
+			? -15 + scrollbarLength
 			: locateScrollbar;
 
-		this.currentPosition = winScrollY; // might need to have react manage it's state
 		scrollbar.style.top = `${containScrollbar}vh`;
 	}
 

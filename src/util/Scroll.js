@@ -47,7 +47,7 @@ class DomScroll {
       }
 
       console.log("noooot");
-      this._setState({ prevPosition: this.DOMS.winScrollY, nameValAsFlag: false });
+      this._setState({ prevPosition: window.scrollY, nameValAsFlag: false });
       callback(scrollName);
     }, 50);
   }
