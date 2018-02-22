@@ -10,7 +10,6 @@ class Contact extends Component {
 			boxShadow: "none",
 			border: "none",
 			color: "white",
-			textShadow: "#b0b0b0 0 0 1px"
 		};
 
 		const column = {
@@ -43,15 +42,19 @@ class Contact extends Component {
 	}
 
 	render() {
+		const { show, type } = this.props;
+
 		return (
-			<Banner
-				bannerkey="contact"
-				show={this.props.show}
-				transition={true}
-				animateType={this.props.type}
-				duration={{ show: 500, hide: 0 }}
-				children={this.content()}
-			/>
+      <div className={`--content --medium ${show ? "" : "--hidden"}`} id="contact">
+				<Banner
+					bannerkey="contact"
+					show={show}
+					transition={true}
+					animateType={type}
+					duration={{ show: 500, hide: 0 }}
+					children={this.content()}
+				/>
+			</div>
 		);
 	}
 }

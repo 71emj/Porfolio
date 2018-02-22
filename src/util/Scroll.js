@@ -1,8 +1,9 @@
 /*import SmoothScroll from "smoothscroll-polyfill";
 SmoothScroll.polyfill();*/
+import Switch from "./Switch";
 
 // manage scroll and scroll condition
-class DomScroll {
+class Scroll {
   constructor() {
     this.state = {
       visible: "",
@@ -41,12 +42,12 @@ class DomScroll {
       const { scrollName, scrollToPosition, didUpdate, nameValAsFlag } = this.state;
 
       if (didUpdate || nameValAsFlag) {
-        console.log("updated");
+        // console.log("updated");
         window.scrollTo(0, scrollToPosition);
         this._pauseScrolling(100);
       }
 
-      console.log("noooot");
+      // console.log("noooot");
       this._setState({ prevPosition: window.scrollY, nameValAsFlag: false });
       callback(scrollName);
     }, 50);
@@ -58,7 +59,7 @@ class DomScroll {
     const { winScrollY, winHeight } = this.DOMS;
     const positions = [0, winHeight, winHeight * 2];
     const positionIsPrecise = positions.reduce((sum, val) => {
-    	const scrollY =  Math.ceil(winScrollY);
+      const scrollY = Math.ceil(winScrollY);
       return val === 0 ? (scrollY === val ? sum + 1 : sum) : (scrollY === val ? sum + val : sum);
     }, 0);
 
@@ -68,7 +69,7 @@ class DomScroll {
       this._pauseScrolling(0);
     }
 
-    console.log(positionIsPrecise);
+    // console.log(positionIsPrecise);
     this._setState({ prevPosition: this.DOMS.winScrollY, nameValAsFlag: !positionIsPrecise });
     callback(name);
   }
@@ -90,7 +91,43 @@ class DomScroll {
       return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
     };
 
-    console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
+    // console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
+		const caseSwitch = new Switch();
+		caseSwitch
+			.setTargets([{ name: "skills" }])
+			.evaluate([`name === "skills"`], function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("setting single case eval successful");
+			});
+
+		caseSwitch
+			.setTargets([{ winScrollY, winHeight }])
+			.evaluate([`winScrollY < winHeight - 200`], function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("setting dual var case eval successful");
+			});
+
+		caseSwitch
+			.setTargets([{ winScrollY, winHeight, name }])
+			.evaluate([`winScrollY < winHeight - 200`, `name === "home"`], { operator: "OR" }, function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("setting OR cases eval successful");
+			});
+
+		caseSwitch
+			.setTargets([{ name }])
+			.evaluate([`name === "skills"`], function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("chainable test case 1");
+			})
+			.evaluate([`name === "contact"`], function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("chainable test case 2");
+			})
+			.evaluate([`name === "about"`], function() {
+				console.log("||||||||||||||||||||||||||||||||||||||");
+				console.log("chainable test case 3");
+			});
 
     // a temporary solution waiting for a better eval method
     // the fall through are intentional as it replace "condition A" || "condition B"
@@ -111,7 +148,7 @@ class DomScroll {
         break;
       case name === "contact":
       case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25:
-        params.push("contact", winHeight * 2, true);
+        params.push("contact", winHeight * 3, true);
         this._setState(addToFields(params));
         break;
       default:
@@ -127,4 +164,4 @@ class DomScroll {
   }
 }
 
-export default DomScroll;
+export default Scroll;

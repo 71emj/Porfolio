@@ -39,16 +39,20 @@ class About extends Component {
 	}
 
 	render() {
+		const { show, type } = this.props;
+
 		return (
-			<Banner
-				bannerkey="about"
-				show={this.props.show}
-				transition={true}
-				animateType={this.props.type}
-				duration={{ show: 500, hide: 0 }}
-				hover={this.hover}
-				children={this.content()}
-			/>
+    	<div className={`--content --medium ${show ? "" : "--hidden"}`} id="about">
+				<Banner
+					bannerkey="about"
+					show={show}
+					transition={true}
+					animateType={type}
+					duration={{ show: 500, hide: 0 }}
+					hover={this.hover}
+					children={this.content()}
+				/>
+			</div>
 		);
 	}
 }

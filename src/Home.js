@@ -4,6 +4,7 @@ import ScrollBar from "./components/ScrollBar";
 import Canvas from "./components/Canvas";
 import Welcome from "./components/Welcome";
 import About from "./components/About";
+import Skills from "./components/Skills";
 import Contact from "./components/Contact";
 import DOMScroll from "./util/Scroll";
 import "./App.css";
@@ -68,7 +69,7 @@ class Home extends Component {
     const bkgdIsNormal = name === "home" || name === "about" ? true : false;
     
     if (bkgdIsNormal) {
-      backgroundScrollY = name === "home" ? 0 : 15;
+      backgroundScrollY = name === "home" ? 5 : 20;
       updateFields.invertStyle = false;
     } 
     else if (!bkgdIsNormal) {
@@ -109,15 +110,10 @@ class Home extends Component {
         <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />
-          <div className={`--content --small ${visible === "home" ? "" : "--hidden"}`} id="home">
-            <Welcome show={visible === "home"} type="fade up" />
-          </div>
-          <div className={`--content --medium ${visible === "about" ? "" : "--hidden"}`} id="about">
-            <About show={visible === "about"} type="fade up" />
-          </div>
-          <div className={`--content --medium ${visible === "contact" ? "" : "--hidden"}`} id="contact">
-            <Contact show={visible === "contact"} type="fade up" />
-          </div>
+          <Welcome show={visible === "home"} type="fade up" />
+          <About show={visible === "about"} type="fade up" />
+          <Skills show={visible === "skill"} type="fade up" />
+          <Contact show={visible === "contact"} type="fade up" />
         </main>
       </div>
     );

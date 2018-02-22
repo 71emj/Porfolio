@@ -12,6 +12,10 @@ const linkobj = {
 		name: "About",
 		href: "#about"
 	},
+	skills: {
+		name: "Skills",
+		href: "#skills"
+	},
 	portfolio: {
 		name: "Portfolio",
 		href: "#portfolio"
