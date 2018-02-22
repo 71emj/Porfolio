@@ -14,8 +14,6 @@ import "./App.css";
 // later will add more pages to the collections
 const Scroll = new DOMScroll();
 
-
-// transition won't kick in in mobile view....because the event is triggered by mousewheel
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -52,20 +50,10 @@ class Home extends Component {
     const { valY, docH } = this.DOMS;
     const ratio = valY / docH;
 
-    let name = ""
-    switch (true) {
-      case ratio <= 0.25:
-        name = "home";
-        break;
-      case ratio <= 0.45:
-        name = "about";
-        break;
-      case ratio <= 0.7:
-        name = "contact";
-        break;
-      default:
-        console.log("wrong");
-    }
+    let name = "";
+    name = ratio <= 0.25 ? "home" : "";
+    name = ratio <= 0.45 ? "about" : "";
+    name = ratio <= 0.7 ? "contact" : "";
 
     Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
@@ -77,19 +65,15 @@ class Home extends Component {
     const updateFields = { visible: name };
     let backgroundScrollY = 0;
 
-    switch (name) {
-      case "home":
-      case "about":
-        backgroundScrollY = name === "home" ? 0 : 15;
-        updateFields.invertStyle = false;
-        break;
-      case "portfolio":
-      case "contact":
-        backgroundScrollY = name === "portfolio" ? 30 : 45;
-        updateFields.invertStyle = true;
-        break;
-      default:
-        console.log("something wrong");
+    const bkgdIsNormal = name === "home" || name === "about" ? true : false;
+    
+    if (bkgdIsNormal) {
+      backgroundScrollY = name === "home" ? 0 : 15;
+      updateFields.invertStyle = false;
+    } 
+    else if (!bkgdIsNormal) {
+      backgroundScrollY = name === "portfolio" ? 30 : 45;
+      updateFields.invertStyle = true;
     }
 
     this.gradientScroll(backgroundScrollY);

@@ -92,6 +92,11 @@ class DomScroll {
 
     console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
 
+    // a temporary solution waiting for a better eval method
+    // the fall through are intentional as it replace "condition A" || "condition B"
+    // which is meant to examined different type of input
+    // which might be able to avoid altogether, but will have to wait for 
+    // the next iteration of the code
     switch (true) {
       case name === "home":
       case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25:
