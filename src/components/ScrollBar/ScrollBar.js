@@ -44,7 +44,7 @@ class ScrollBar extends Component {
 		this.TID = setTimeout(() => {
 			this.prevScroll = window.scrollY;
 			this.TID = null;
-		}, this.props.fadeTime * 0.9); 
+		}, this.props.fadeTime * 0.8); 
 
 		this.displayScrollbar(evt);
 		this.scroll();
@@ -68,7 +68,7 @@ class ScrollBar extends Component {
 		const locateScrollbar = !position
 			? position + scrollbarLength - (dist <= 0.5 ? 5 : 10)
 			: position < 100
-			? position - scrollbarLength / 2 + (dist / 2 < 5 ? 5 : (dist / 2)) 
+			? position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)) 
 			: position - scrollbarLength - (dist <= 0 ? dist : 0);
 
 		const containScrollbar = locateScrollbar >= 100 
