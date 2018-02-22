@@ -72,7 +72,7 @@ class Home extends Component {
       updateFields.invertStyle = false;
     } 
     else if (!bkgdIsNormal) {
-      backgroundScrollY = name === "portfolio" ? 30 : 45;
+      backgroundScrollY = name === "portfolio" ? 55 : 85;
       updateFields.invertStyle = true;
     }
 
@@ -97,12 +97,12 @@ class Home extends Component {
 
   adjustBackground = evt => {
     const { body, docH } = this.DOMS;
-    body.style.backgroundSize = `${window.innerWidth}px ${docH * 2.5}px`;
+    body.style.backgroundSize = `${window.innerWidth}px ${docH}px`;
   }
   
   render() {
     const { visible, invertStyle } = this.state;
-    const scrollbarLocation = new Map([["home", 0], ["about", 25], ["contact", 50]]);
+    const scrollbarLocation = new Map([["home", 0], ["about", 25], ["contact", 100]]);
     return (
       <div>
         <ScrollBar domElements={this.DOMS} position={scrollbarLocation.get(visible)} fadeTime={1000}/>
@@ -115,7 +115,7 @@ class Home extends Component {
           <div className={`--content --medium ${visible === "about" ? "" : "--hidden"}`} id="about">
             <About show={visible === "about"} type="fade up" />
           </div>
-          <div className={`--content --small ${visible === "contact" ? "" : "--hidden"}`} id="contact">
+          <div className={`--content --medium ${visible === "contact" ? "" : "--hidden"}`} id="contact">
             <Contact show={visible === "contact"} type="fade up" />
           </div>
         </main>

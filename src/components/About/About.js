@@ -17,7 +17,7 @@ class About extends Component {
 				<Header as="h1" textAlign={"left"}>
 					Hello, I'm 71emj
 					<Header.Subheader>
-						full-stack developer and react lover
+						<p>full-stack developer and react lover</p>
 					</Header.Subheader>
 				</Header>
 				<br />

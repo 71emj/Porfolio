@@ -1,0 +1,26 @@
+#contactIcons {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-around;
+}
+
+#contactIcons i.inverted.bordered.icon,
+#contactIcons i.inverted.circular.icon {
+	margin-top: 0.1rem;
+  background-color: #405d71 !important;
+  -webkit-transition: background-color ease-out .25s;
+  -moz-transition: background-color ease-out .25s;
+  -ms-transition: background-color ease-out .25s;
+  -o-transition: background-color ease-out .25s;
+  transition: background-color ease-out .25s;
+}
+
+#contactIcons i.inverted.bordered.icon:hover,
+#contactIcons i.inverted.circular.icon:hover {
+  /*background-color: #ef3a3a !important;*/
+  background-color: #e64a4a !important;
+}
+
+/*@media screen {
+	
+}*/

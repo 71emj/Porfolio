@@ -8,7 +8,7 @@ class ScrollBar extends Component {
 		const scrollbar = document.querySelector(".--scrollbar");
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
-		const scrollbarLength = window.innerHeight / docHeight;
+		const scrollbarLength = Math.floor(35 * window.innerHeight / docHeight);
 		return { scrollbar, scrollbarLength, docHeight, html };
 	}
 
@@ -30,7 +30,7 @@ class ScrollBar extends Component {
 
 	componentDidMount() {
 		const { scrollbar, scrollbarLength } = this.DOMS;
-		scrollbar.style.height = scrollbarLength;
+		scrollbar.style.height = scrollbarLength + "vh";
 		this.prevScroll = window.scrollY;
 		this.findScrollBarPosition();
 		window.addEventListener("scroll", this.throttledScrollEvent);
@@ -66,13 +66,13 @@ class ScrollBar extends Component {
 		console.log("=======================================");
 
 		const locateScrollbar = !position
-			? position + scrollbarLength - (dist <= 0.5 ? 5 : 10)
-			: position < 100
+			? position - (dist <= 0.5 ? 5 : 10)
+			: position + scrollbarLength < 100
 			? position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)) 
-			: position - scrollbarLength - (dist <= 0 ? dist : 0);
+			: position - scrollbarLength - (dist >= 0.5 ? 5 : 10);
 
-		const containScrollbar = locateScrollbar >= 100 
-			? 100 - scrollbarLength 
+		const containScrollbar = locateScrollbar >= 100 - scrollbarLength
+			? 115 - scrollbarLength 
 			: locateScrollbar <= -15
 			? -15 + scrollbarLength
 			: locateScrollbar;
@@ -89,13 +89,15 @@ class ScrollBar extends Component {
 		const { position } = this.props; // updated position
 
 		const locateScrollbar = !position
-			? position + scrollbarLength
-			: position < 100
-				? position - scrollbarLength / 2
-				: position - scrollbarLength;
+			? position
+			: position + scrollbarLength < 100
+			? position - scrollbarLength / 2
+			: position - scrollbarLength;
+		console.log(scrollbarLength);
 
 		scrollbar.style.top = `${locateScrollbar}vh`;
 	}
+
 
 	render() {
 		return (

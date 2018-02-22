@@ -36,13 +36,18 @@ class Nav extends Component {
 			const cur = links[elem];
 			linkItems.push(
 				isResponsive ? (
-					<Dropdown.Item key={cur.name}> {cur.name} </Dropdown.Item>
+					<Dropdown.Item 
+						key={cur.name}
+						data-name={elem}
+						href={cur.href}
+						onClick={evt => this.props.linkTo(evt)}
+					> {cur.name} </Dropdown.Item>
 				) : (
 					<Menu.Item
+						key={cur.name}
 						data-name={elem}
 						href={cur.href}
 						link={true}
-						key={cur.name}
 						onClick={evt => this.props.linkTo(evt)}
 					>{cur.name}</Menu.Item>
 				)
