@@ -1,6 +1,7 @@
 /*import SmoothScroll from "smoothscroll-polyfill";
 SmoothScroll.polyfill();*/
 import Switch from "./Switch";
+import scrollConditions from "../config/condition.json";
 
 // manage scroll and scroll condition
 class Scroll {
@@ -100,27 +101,17 @@ class Scroll {
 
     caseSwitch
       .evalTargets({ name }, { visible, winScrollY, winHeight, scrollDist })
-      .evaluate([
-          `name === "home"`,
-          `visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25`
-        ], { operator: "OR" },
+      .evaluate(scrollConditions["home"], { operator: "OR" },
         endSwitch => {
           setParamsToState("home", 0, true);
           endSwitch();
         })
-      .evaluate([
-          `name === "about"`,
-          `visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25`,
-          `visible === "home" && winScrollY > 200 && scrollDist <= -25`
-        ], { operator: "OR" },
+      .evaluate(scrollConditions["about"], { operator: "OR" },
         endSwitch => {
           setParamsToState("about", winHeight, true);
           endSwitch();
         })
-      .evaluate([
-          `name === "contact"`,
-          `visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25`
-        ], { operator: "OR" },
+      .evaluate(scrollConditions["contact"], { operator: "OR" },
         endSwitch => {
           setParamsToState("contact", winHeight * 3, true);
           endSwitch();
