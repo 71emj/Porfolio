@@ -109,9 +109,13 @@ class Scroll {
         endSwitch => {
           endSwitch(["skills", winHeight * 2, true]);
         })
+      .evaluate(scrollConditions["portfolio"], { operator: "OR" },
+        endSwitch => {
+          endSwitch(["portfolio", winHeight * 3, true]);
+        })
       .evaluate(scrollConditions["contact"], { operator: "OR" },
         endSwitch => {
-          endSwitch(["contact", winHeight * 3, true]);
+          endSwitch(["contact", winHeight * 4, true]);
         })
       .default((debug, results) => {
         results && setParamsToState(...results);

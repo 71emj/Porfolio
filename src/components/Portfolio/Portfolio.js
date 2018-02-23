@@ -3,7 +3,7 @@ import { Segment, Header, Icon } from "semantic-ui-react";
 import Banner from "../Banner";
 import "./style.css";
 
-class Skills extends Component {
+class Portfolio extends Component {
 	content() {
 		const style = {
 			background: "none",
@@ -14,11 +14,9 @@ class Skills extends Component {
 
 		return (
 			<Segment key="aboutMe" as="div" size="huge" style={style}>
-				<Icon link inverted circular={false} size="huge" name="html5" />
-				<Icon link inverted circular={false} size="huge" name="css3" />
-				<Icon link inverted circular={false} size="huge" name="server" />
-				<Icon link inverted circular={false} size="huge" name="pied piper" />
-				<Icon link inverted circular={false} size="huge" name="git" />
+				<Header as="h1" textAlign="center" style={style}>
+					PORTFOLIO UNDER CONSTRUCTION ...
+				</Header>
 			</Segment>
 		);
 	}
@@ -27,9 +25,9 @@ class Skills extends Component {
 		const { show, type } = this.props;
 
 		return (
-			<div className={`--content --medium ${show ? "" : "--hidden"}`} id="skills">
+			<div className={`--content --medium ${show ? "" : "--hidden"}`} id="portfolio">
 				<Banner
-					bannerkey="skills"
+					bannerkey="portfolio"
 					show={show}
 					transition={true}
 					animateType={type}
@@ -42,4 +40,4 @@ class Skills extends Component {
 	}
 }
 
-export default Skills;
+export default Portfolio;

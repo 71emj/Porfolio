@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import Switch from "../../util/Switch";
 import "./style.css";
 
-const caseSwitch = new Switch();
 // scrollbar is only a view element, i.e. no logic
 class ScrollBar extends Component {
 
@@ -10,7 +8,7 @@ class ScrollBar extends Component {
 		const scrollbar = this.scrollbar; /*document.querySelector(".--scrollbar");*/
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
-		const scrollbarLength = Math.floor(45 * window.innerHeight / docHeight);
+		const scrollbarLength = Math.floor(70 * window.innerHeight / docHeight);
 		return { scrollbar, scrollbarLength, docHeight, html };
 	}
 
@@ -66,12 +64,9 @@ class ScrollBar extends Component {
 	}
 
 	scroll() {
-		const { scrollbar, scrollbarLength, winScrollY } = this.DOMS;
+		const { scrollbar, scrollbarLength } = this.DOMS;
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
-		console.log("WE WILL READ THIS ONLY");
-		console.log(scrollbar);
-		console.log("=======================================");
 
 		const locateScrollbar = !position
 			? position - (dist <= 0.5 ? 5 : 10)
@@ -116,30 +111,3 @@ class ScrollBar extends Component {
 }
 
 export default ScrollBar;
-
-
-
-		// let locateScrollbar = 0;
-		// let containScrollbar = 0;
-		// const results = [ 
-		// 	position - (dist <= 0.5 ? 5 : 10),
-		// 	position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)),
-		// 	position - scrollbarLength - (dist >= 0.5 ? 5 : 10)
-		// ];
-		// const reCalResult = [ 115 - scrollbarLength, -15 + scrollbarLength ]
-
-		// caseSwitch
-		// 	.evalTargets({ position, scrollbarLength })
-		// 	.evaluate(["!position"], endSwitch => endSwitch(results[0]))
-		// 	.evaluate(["position + scrollbarLength < 100"], endSwitch => endSwitch(results[1]))
-		// 	.default((debug, result) => {
-		// 		locateScrollbar = result || results[2];
-		// 		debug();
-		// 	})
-		// 	.evalTargets({ locateScrollbar, scrollbarLength })
-		// 	.evaluate(["locateScrollbar >= 100 - scrollbarLength"], endSwitch => endSwitch(reCalResult[0]))
-		// 	.evaluate(["locateScrollbar <= -15"], endSwitch => endSwitch(reCalResult[1]))
-		// 	.default((debug, result) => {
-		// 		containScrollbar = containScrollbar || locateScrollbar;
-		// 		debug();
-		// 	});

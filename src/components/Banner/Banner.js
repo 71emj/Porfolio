@@ -5,7 +5,7 @@ import "./style.css";
 class Banner extends Component {
 
 	render() {
-		const { animateType, show, duration, children, bannerkey, className, alignType } = this.props;
+		const { animateType, show, duration, children, bannerkey, alignType } = this.props;
 		const alignClass = new Map([["flex end", "--alignEnd "], ["flex start", "--alignStart"]]);
 
 		let classList = "--flex --wrapper --column ";

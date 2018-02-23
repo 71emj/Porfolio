@@ -5,7 +5,9 @@ import Canvas from "./components/Canvas";
 import Welcome from "./components/Welcome";
 import About from "./components/About";
 import Skills from "./components/Skills";
+import Portfolio from "./components/Portfolio";
 import Contact from "./components/Contact";
+
 import DOMScroll from "./util/Scroll";
 import Switch from "./util/Switch";
 import "./App.css";
@@ -14,8 +16,8 @@ import "./App.css";
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
 // later will add more pages to the collections
-const Scroll = new DOMScroll();
 const switchCase = new Switch();
+const Scroll = new DOMScroll();
 
 class Home extends Component {
   constructor(props) {
@@ -24,6 +26,10 @@ class Home extends Component {
       visible: "",
       invertStyle: false
     };
+  }
+
+  get scrollbarLocation() {
+    return new Map([["home", 0], ["about", 25], ["skills", 50], ["portfolio", 75], ["contact", 100]]);
   }
   
   get DOMS() {
@@ -52,7 +58,7 @@ class Home extends Component {
   componentDidMount() {
     const { valY, docH } = this.DOMS;
     const ratio = window.scrollY / docH;
-
+    
     let name = "";
     switchCase
       .evalTargets({ ratio })
@@ -73,7 +79,6 @@ class Home extends Component {
         debug();
       });
 
-
     Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
     window.addEventListener("scroll", this.scrollHandler);
@@ -84,20 +89,29 @@ class Home extends Component {
     const updateFields = { visible: name };
     let backgroundScrollY = 0;
 
-    const bkgdIsNormal = name === "home" || name === "about" ? true : false;
-    
-    if (bkgdIsNormal) {
-      backgroundScrollY = name === "home" ? 5 : 20;
-      updateFields.invertStyle = false;
-    } 
-    else if (!bkgdIsNormal) {
-      backgroundScrollY = name === "portfolio" 
-        ? 80 
-        : name === "skills" 
-        ? 60
-        : 100;
-      updateFields.invertStyle = true;
-    }
+    switchCase
+      .evalTargets({ name })
+      .evaluate(["name === 'home'"], endSwitch => {
+        endSwitch([0, false]);
+      })
+      .evaluate(["name === 'about'"], endSwitch => {
+        endSwitch([20, false]);
+      })
+      .evaluate(["name === 'skills'"], endSwitch => {
+        endSwitch([50, true]);
+      })
+      .evaluate(["name === 'portfolio'"], endSwitch => {
+        endSwitch([70, true]);
+      })
+      .evaluate(["name === 'contact'"], endSwitch => {
+        endSwitch([90, true]);
+      })
+      .default((debug, results) => { 
+        const [ scrollVal, bool ] = results;
+        backgroundScrollY = scrollVal;
+        updateFields.invertStyle = bool;
+        debug();
+      });
 
     this.gradientScroll(backgroundScrollY);
     this.setState(updateFields);
@@ -125,16 +139,17 @@ class Home extends Component {
   
   render() {
     const { visible, invertStyle } = this.state;
-    const scrollbarLocation = new Map([["home", 0], ["about", 25], ["contact", 100]]);
+    const scrollbar = this.scrollbarLocation;
     return (
       <div>
-        <ScrollBar domElements={this.DOMS} position={scrollbarLocation.get(visible)} fadeTime={1000}/>
+        <ScrollBar domElements={this.DOMS} position={scrollbar.get(visible)} fadeTime={1000}/>
         <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />
           <Welcome show={visible === "home"} type="fade up" />
           <About show={visible === "about"} type="fade up" />
           <Skills show={visible === "skills"} type="fade up" />
+          <Portfolio show={visible === "portfolio"} type="fade up" />
           <Contact show={visible === "contact"} type="fade up" />
         </main>
       </div>

@@ -64,6 +64,9 @@ class Switch {
   /// which in simple eval is worse than ternary expression 
   /// but with complex chaining and complex conditional evaluation, this might be 
   /// a much better pattern to keep code clean
+
+  /// will need a way to map out case - val pair 
+  /// in order to cheive chaining 
   returnResult() {
     return this.result
   } /// need rework
@@ -111,8 +114,9 @@ class Switch {
     // console.log({condition, matchingPattern});
     // thanks to javascript ignoring type with none triple equal expression, "1" <= 2 === true
     const replaceText = matched => {
+      const isBoolean = matched === "!" ? true : false;
       const value = testTargets[matched];
-      return !!+value ? value : `"${value}"`;
+      return !!+value || isBoolean ? value : `"${value}"`;
     }
 
     const redactedCondition = condition.replace(matchingPattern, replaceText);
