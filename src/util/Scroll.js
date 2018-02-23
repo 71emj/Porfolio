@@ -92,68 +92,42 @@ class Scroll {
     };
 
     // console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
-		const caseSwitch = new Switch();
-		caseSwitch
-			.setTargets([{ name: "skills" }])
-			.evaluate([`name === "skills"`], function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("setting single case eval successful");
-			});
-
-		caseSwitch
-			.setTargets([{ winScrollY, winHeight }])
-			.evaluate([`winScrollY < winHeight - 200`], function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("setting dual var case eval successful");
-			});
-
-		caseSwitch
-			.setTargets([{ winScrollY, winHeight, name }])
-			.evaluate([`winScrollY < winHeight - 200`, `name === "home"`], { operator: "OR" }, function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("setting OR cases eval successful");
-			});
-
-		caseSwitch
-			.setTargets([{ name }])
-			.evaluate([`name === "skills"`], function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("chainable test case 1");
-			})
-			.evaluate([`name === "contact"`], function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("chainable test case 2");
-			})
-			.evaluate([`name === "about"`], function() {
-				console.log("||||||||||||||||||||||||||||||||||||||");
-				console.log("chainable test case 3");
-			});
-
-    // a temporary solution waiting for a better eval method
-    // the fall through are intentional as it replace "condition A" || "condition B"
-    // which is meant to examined different type of input
-    // which might be able to avoid altogether, but will have to wait for 
-    // the next iteration of the code
-    switch (true) {
-      case name === "home":
-      case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25:
-        params.push("home", 0, true);
-        this._setState(addToFields(params));
-        break;
-      case name === "about":
-      case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25:
-      case visible === "home" && winScrollY > 200 && scrollDist <= -25:
-        params.push("about", winHeight, true);
-        this._setState(addToFields(params));
-        break;
-      case name === "contact":
-      case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25:
-        params.push("contact", winHeight * 3, true);
-        this._setState(addToFields(params));
-        break;
-      default:
-        console.log("nothing");
+    const caseSwitch = new Switch();
+    const setParamsToState = (name, scollVal, bool) => {
+      params.push(name, scollVal, bool);
+      this._setState(addToFields(params));
     }
+
+    caseSwitch
+      .evalTargets({ name }, { visible, winScrollY, winHeight, scrollDist })
+      .evaluate([
+          `name === "home"`,
+          `visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25`
+        ], { operator: "OR" },
+        endSwitch => {
+          setParamsToState("home", 0, true);
+          endSwitch();
+        })
+      .evaluate([
+          `name === "about"`,
+          `visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25`,
+          `visible === "home" && winScrollY > 200 && scrollDist <= -25`
+        ], { operator: "OR" },
+        endSwitch => {
+          setParamsToState("about", winHeight, true);
+          endSwitch();
+        })
+      .evaluate([
+          `name === "contact"`,
+          `visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25`
+        ], { operator: "OR" },
+        endSwitch => {
+          setParamsToState("contact", winHeight * 3, true);
+          endSwitch();
+        })
+      .default(debug => {
+        debug();
+      });
   }
 
   _pauseScrolling(duration) {
@@ -165,3 +139,30 @@ class Scroll {
 }
 
 export default Scroll;
+
+
+// a temporary solution waiting for a better eval method
+// the fall through are intentional as it replace "condition A" || "condition B"
+// which is meant to examined different type of input
+// which might be able to avoid altogether, but will have to wait for 
+// the next iteration of the code
+// switch (true) {
+//   case name === "home":
+//   case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25:
+//     // params.push("home", 0, true);
+//     // this._setState(addToFields(params));
+//     break;
+//   case name === "about":
+//   case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25:
+//   case visible === "home" && winScrollY > 200 && scrollDist <= -25:
+//     // params.push("about", winHeight, true);
+//     // this._setState(addToFields(params));
+//     break;
+//   case name === "contact":
+//   case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25:
+//     // params.push("contact", winHeight * 3, true);
+//     // this._setState(addToFields(params));
+//     break;
+//   default:
+//     console.log("nothing");
+// }

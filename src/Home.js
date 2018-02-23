@@ -7,6 +7,7 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Contact from "./components/Contact";
 import DOMScroll from "./util/Scroll";
+import Switch from "./util/Switch";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
@@ -14,6 +15,7 @@ import "./App.css";
 // and links to repos
 // later will add more pages to the collections
 const Scroll = new DOMScroll();
+const switchCase = new Switch();
 
 class Home extends Component {
   constructor(props) {
@@ -52,9 +54,22 @@ class Home extends Component {
     const ratio = valY / docH;
 
     let name = "";
-    name = ratio <= 0.25 ? "home" : "";
-    name = ratio <= 0.45 ? "about" : "";
-    name = ratio <= 0.7 ? "contact" : "";
+    switchCase
+      .evalTargets({ ratio })
+      .evaluate([`ratio <= .25`], end => {
+        name = "home"
+        end();
+      })
+      .evaluate([`ratio <= .45`], end => {
+        name = "about"
+        end();
+      })
+      .evaluate([`ratio <= 1`], end => {
+        name = "contact"
+        end();
+      })
+      .default(debug => debug());
+
 
     Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
