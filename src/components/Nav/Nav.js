@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Menu, Dropdown, Icon } from "semantic-ui-react";
 import "./style.css";
 
-// inorder to create scrolling effect, perhaps what i need is scrollto function
 const linkobj = {
 	home: {
 		name: "Home",

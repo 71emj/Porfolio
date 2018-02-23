@@ -102,7 +102,7 @@ class Switch {
     const matchState = this.isMatched;
     
     if (matchState || !testTargets) {
-      console.log("false input or matched found");
+      // console.log("false input or matched found");
       return false;
     }
     
@@ -120,7 +120,7 @@ class Switch {
     }
 
     const redactedCondition = condition.replace(matchingPattern, replaceText);
-    console.log(redactedCondition);
+    // console.log(redactedCondition);
     return eval(redactedCondition); // eval might be able to be replaced by Function constructor
   }
 

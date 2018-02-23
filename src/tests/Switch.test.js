@@ -17,6 +17,14 @@ describe("test different use cases of Switch", () => {
       });
   });
 
+  test("if input name is the same as the literal condition name, if value matched should return true", () => {
+    caseSwitch
+      .evalTargets({ home: "home" })
+      .evaluate([`home === "home"`], result => {
+        expect(result).toBeTruthy();
+      });
+  });
+
   test("static, single input/value should return bool", () => {
     caseSwitch
       .evalTargets({ name: "skills" })

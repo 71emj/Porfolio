@@ -142,7 +142,7 @@ class Home extends Component {
     const scrollbar = this.scrollbarLocation;
     return (
       <div>
-        <ScrollBar domElements={this.DOMS} position={scrollbar.get(visible)} fadeTime={1000}/>
+        <ScrollBar domElements={this.DOMS} position={scrollbar.get(visible)} fadeTime={800}/>
         <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />

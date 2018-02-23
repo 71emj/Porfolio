@@ -5,7 +5,7 @@ import "./style.css";
 class ScrollBar extends Component {
 
 	get DOMS() {
-		const scrollbar = this.scrollbar; /*document.querySelector(".--scrollbar");*/
+		const scrollbar = document.querySelector(".--scrollbar");
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
 		const scrollbarLength = Math.floor(70 * window.innerHeight / docHeight);
@@ -16,12 +16,9 @@ class ScrollBar extends Component {
 		const { html, docHeight } = this.DOMS;
 		const { position } = this.props;
 		const scrollTop = html.scrollTop;
-		const scroll = this.prevScroll <= html.scrollTop ? position - scrollTop : scrollTop - position;
+		console.log({ prev: this.prevScroll, scrollTop })
+		const scroll = this.prevScroll <= scrollTop ? (position - scrollTop) : (scrollTop - position);
 		return scroll * (100 / docHeight) * 0.5;
-	}
-
-	set scrollBar(documentSelector) {
-		this.scrollbar = documentSelector;
 	}
 
 	get TID() {
@@ -33,9 +30,7 @@ class ScrollBar extends Component {
 	}
 
 	componentDidMount() {
-		this.scrollBar = document.querySelector(".--scrollbar");
 		const { scrollbar, scrollbarLength } = this.DOMS;
-		console.log("||||", scrollbar);
 		scrollbar.style.height = scrollbarLength + "vh";
 		this.prevScroll = window.scrollY;
 		this.findScrollBarPosition();
@@ -50,7 +45,7 @@ class ScrollBar extends Component {
 		this.TID = setTimeout(() => {
 			this.prevScroll = window.scrollY;
 			this.TID = null;
-		}, this.props.fadeTime * 0.8); 
+		}, 1000); 
 
 		this.displayScrollbar(evt);
 		this.scroll();
@@ -68,11 +63,13 @@ class ScrollBar extends Component {
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
 
+		console.log(dist);
+
 		const locateScrollbar = !position
-			? position - (dist <= 0.5 ? 5 : 10)
+			? position - (dist <= 0.5 ? 8 : 10)
 			: position + scrollbarLength < 100
-			? position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)) 
-			: position - scrollbarLength + (dist >= 0.5 ? 5 : 10);
+			? position - scrollbarLength / 2 + (dist / 2 < 0 ? -8 : (dist / 2)) 
+			: position - scrollbarLength + (dist >= 0.5 ? 8 : 10);
 
 		const containScrollbar = locateScrollbar >= 100 - scrollbarLength
 			? 115 - scrollbarLength 

@@ -44,7 +44,7 @@ class Scroll {
 
       if (didUpdate || nameValAsFlag) {
         window.scrollTo(0, scrollToPosition);
-        this._pauseScrolling(100);
+        this._pauseScrolling(0);
       }
 
       this._setState({ prevPosition: window.scrollY, nameValAsFlag: false });
