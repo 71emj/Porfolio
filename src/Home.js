@@ -92,19 +92,19 @@ class Home extends Component {
     switchCase
       .evalTargets({ name })
       .evaluate(["name === 'home'"], endSwitch => {
-        endSwitch([0, false]);
+        endSwitch([3, false]);
       })
       .evaluate(["name === 'about'"], endSwitch => {
-        endSwitch([20, false]);
+        endSwitch([18, false]);
       })
       .evaluate(["name === 'skills'"], endSwitch => {
-        endSwitch([50, true]);
+        endSwitch([42, true]);
       })
       .evaluate(["name === 'portfolio'"], endSwitch => {
-        endSwitch([70, true]);
+        endSwitch([68, true]);
       })
       .evaluate(["name === 'contact'"], endSwitch => {
-        endSwitch([90, true]);
+        endSwitch([85, true]);
       })
       .default((debug, results) => { 
         const [ scrollVal, bool ] = results;
