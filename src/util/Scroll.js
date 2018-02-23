@@ -43,12 +43,10 @@ class Scroll {
       const { scrollName, scrollToPosition, didUpdate, nameValAsFlag } = this.state;
 
       if (didUpdate || nameValAsFlag) {
-        // console.log("updated");
         window.scrollTo(0, scrollToPosition);
         this._pauseScrolling(100);
       }
 
-      // console.log("noooot");
       this._setState({ prevPosition: window.scrollY, nameValAsFlag: false });
       callback(scrollName);
     }, 50);
@@ -70,7 +68,6 @@ class Scroll {
       this._pauseScrolling(0);
     }
 
-    // console.log(positionIsPrecise);
     this._setState({ prevPosition: this.DOMS.winScrollY, nameValAsFlag: !positionIsPrecise });
     callback(name);
   }
@@ -92,7 +89,6 @@ class Scroll {
       return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
     };
 
-    // console.log({ winScrollY, scrollDist, scrollTop: html.scrollTop, name, visible });
     const caseSwitch = new Switch();
     const setParamsToState = (name, scollVal, bool) => {
       params.push(name, scollVal, bool);
@@ -103,20 +99,22 @@ class Scroll {
       .evalTargets({ name }, { visible, winScrollY, winHeight, scrollDist })
       .evaluate(scrollConditions["home"], { operator: "OR" },
         endSwitch => {
-          setParamsToState("home", 0, true);
-          endSwitch();
+          endSwitch(["home", 0, true]);
         })
       .evaluate(scrollConditions["about"], { operator: "OR" },
         endSwitch => {
-          setParamsToState("about", winHeight, true);
-          endSwitch();
+          endSwitch(["about", winHeight, true]);
+        })
+      .evaluate(scrollConditions["skills"], { operator: "OR" },
+        endSwitch => {
+          endSwitch(["skills", winHeight * 2, true]);
         })
       .evaluate(scrollConditions["contact"], { operator: "OR" },
         endSwitch => {
-          setParamsToState("contact", winHeight * 3, true);
-          endSwitch();
+          endSwitch(["contact", winHeight * 3, true]);
         })
-      .default(debug => {
+      .default((debug, results) => {
+        results && setParamsToState(...results);
         debug();
       });
   }

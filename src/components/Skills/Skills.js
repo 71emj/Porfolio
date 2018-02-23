@@ -14,8 +14,10 @@ class Skills extends Component {
 
 		return (
 			<Segment key="aboutMe" as="div" size="huge" style={style}>
-				<Icon link inverted circular={false} size="massive" name="html5" />
-				<Icon link inverted circular={false} size="massive" name="css3" />
+				<Icon link inverted circular={false} size="huge" name="html5" />
+				<Icon link inverted circular={false} size="huge" name="css3" />
+				<Icon link inverted circular={false} size="huge" name="server" />
+				<Icon link inverted circular={false} size="huge" name="pied piper" />
 			</Segment>
 		);
 	}

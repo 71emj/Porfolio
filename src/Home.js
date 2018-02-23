@@ -51,24 +51,27 @@ class Home extends Component {
 
   componentDidMount() {
     const { valY, docH } = this.DOMS;
-    const ratio = valY / docH;
+    const ratio = window.scrollY / docH;
 
     let name = "";
     switchCase
       .evalTargets({ ratio })
-      .evaluate([`ratio <= .25`], end => {
-        name = "home"
-        end();
+      .evaluate([`ratio <= .25`], endSwitch => {
+        endSwitch("home");
       })
-      .evaluate([`ratio <= .45`], end => {
-        name = "about"
-        end();
+      .evaluate([`ratio <= .5`], endSwitch => {
+        endSwitch("about");
       })
-      .evaluate([`ratio <= 1`], end => {
-        name = "contact"
-        end();
+      .evaluate([`ratio <= .75`], endSwitch => {
+        endSwitch("skills");
       })
-      .default(debug => debug());
+      .evaluate([`ratio <= 1`], endSwitch => {
+        endSwitch("contact");
+      })
+      .default((debug, results) => { 
+        name = results;
+        debug();
+      });
 
 
     Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
@@ -88,7 +91,11 @@ class Home extends Component {
       updateFields.invertStyle = false;
     } 
     else if (!bkgdIsNormal) {
-      backgroundScrollY = name === "portfolio" ? 55 : 85;
+      backgroundScrollY = name === "portfolio" 
+        ? 80 
+        : name === "skills" 
+        ? 60
+        : 100;
       updateFields.invertStyle = true;
     }
 
@@ -127,7 +134,7 @@ class Home extends Component {
           <Canvas />
           <Welcome show={visible === "home"} type="fade up" />
           <About show={visible === "about"} type="fade up" />
-          <Skills show={visible === "skill"} type="fade up" />
+          <Skills show={visible === "skills"} type="fade up" />
           <Contact show={visible === "contact"} type="fade up" />
         </main>
       </div>

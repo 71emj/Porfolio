@@ -33,7 +33,10 @@ class Switch {
   	[options, callback] = typeof options === "function" ? [{}, options] : [options, callback];
   	const conditions = this._setConditions(cases);
   	const { operator } = options;
-    const exit = () => this.isMatched = true;
+    const exit = val => {
+      this.isMatched = true;
+      this.result = val;
+    }
 
   	if (operator === "AND") {
   		this._evaluateAND(conditions) && callback(exit);
@@ -49,16 +52,35 @@ class Switch {
     return this;
   }
 
+  // intermediate(callback) {
+  //   const set
+  //   callback
+  // }
+
+  /// bad pattern --> will encourage too long a chain
+  /// const resultIs = switch.evalTargets().evaluate().return()
+  /// better pattern might be ---> evalThenReturn, need better name
+  /// const resultIs = switch.evalTargets().evaluateThenReturn().evaluateThenReturn()...
+  /// which in simple eval is worse than ternary expression 
+  /// but with complex chaining and complex conditional evaluation, this might be 
+  /// a much better pattern to keep code clean
+  returnResult() {
+    return this.result
+  } /// need rework
+
   default(callback) {
     const logEvaluations = () => {
       console.log(this.testTargets);
+      // console.log(this.result);
       // during evaluation there should be a helper method to set 
       // eval log that can be easily aquired in this function
       // will help the user to know more about the evaluation
       // can do a split case by case log
       // console.log(this), should log all different sets of evals
     }
-    callback(logEvaluations);
+
+    callback(logEvaluations, this.result);
+    return this;
   }
 	
 	_setConditions(cases) {
@@ -76,20 +98,26 @@ class Switch {
   	const testTargets = this.testTargets;
     const matchState = this.isMatched;
     
-    if (matchState) {
+    if (matchState || !testTargets) {
+      console.log("false input or matched found");
       return false;
     }
+    
+    const targetKeys = [ "[!]", ...Object.keys(testTargets) ];
+    const matchingPattern = new RegExp(targetKeys.join("|"), "g");
+
     // since it's imppossible to use original name, we need to 
-    // replace the name with actual value in the condition expression 
-    const matchingPattern = new RegExp(Object.keys(testTargets).join("|"), "g");
+    // replace the name with actual value in the condition expression
     // console.log({condition, matchingPattern});
     // thanks to javascript ignoring type with none triple equal expression, "1" <= 2 === true
-    const redactedCondition = condition.replace(matchingPattern, matched => {
+    const replaceText = matched => {
       const value = testTargets[matched];
       return !!+value ? value : `"${value}"`;
-    });
+    }
+
+    const redactedCondition = condition.replace(matchingPattern, replaceText);
     console.log(redactedCondition);
-    return eval(redactedCondition);
+    return eval(redactedCondition); // eval might be able to be replaced by Function constructor
   }
 
   _evaluateAND(conditions) {
@@ -112,3 +140,14 @@ class Switch {
 }
 
 export default Switch;
+
+
+// as powerful as it gets, the interface is still too much
+// need to reduce as much noise as possible
+// will also need to add features such as expression
+
+// tbd, prob not neccessary
+// a test behavior might be useful to bundle with debug
+// idea is that the with default debug, the user can get a test log
+// of failed, and passed tests --> with that in mind, failed complex case 
+// can 

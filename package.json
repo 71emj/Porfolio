@@ -15,14 +15,20 @@
     "smoothscroll-polyfill": "^0.4.0"
   },
   "scripts": {
+    "test": "react-scripts test --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "babel-preset-flow": "^6.23.0"
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^22.4.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^22.4.2",
+    "jest-cli": "^22.4.2"
   }
 }

@@ -1,14 +1,16 @@
 import React, { Component } from "react";
+import Switch from "../../util/Switch";
 import "./style.css";
 
+const caseSwitch = new Switch();
 // scrollbar is only a view element, i.e. no logic
 class ScrollBar extends Component {
 
 	get DOMS() {
-		const scrollbar = document.querySelector(".--scrollbar");
+		const scrollbar = this.scrollbar; /*document.querySelector(".--scrollbar");*/
 		const html = document.documentElement;
 		const docHeight = html.scrollHeight;
-		const scrollbarLength = Math.floor(35 * window.innerHeight / docHeight);
+		const scrollbarLength = Math.floor(45 * window.innerHeight / docHeight);
 		return { scrollbar, scrollbarLength, docHeight, html };
 	}
 
@@ -20,6 +22,10 @@ class ScrollBar extends Component {
 		return scroll * (100 / docHeight) * 0.5;
 	}
 
+	set scrollBar(documentSelector) {
+		this.scrollbar = documentSelector;
+	}
+
 	get TID() {
 		return this.timeoutId;
 	}
@@ -29,7 +35,9 @@ class ScrollBar extends Component {
 	}
 
 	componentDidMount() {
+		this.scrollBar = document.querySelector(".--scrollbar");
 		const { scrollbar, scrollbarLength } = this.DOMS;
+		console.log("||||", scrollbar);
 		scrollbar.style.height = scrollbarLength + "vh";
 		this.prevScroll = window.scrollY;
 		this.findScrollBarPosition();
@@ -62,14 +70,14 @@ class ScrollBar extends Component {
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
 		console.log("WE WILL READ THIS ONLY");
-		console.log(dist);
+		console.log(scrollbar);
 		console.log("=======================================");
 
 		const locateScrollbar = !position
 			? position - (dist <= 0.5 ? 5 : 10)
 			: position + scrollbarLength < 100
 			? position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)) 
-			: position - scrollbarLength - (dist >= 0.5 ? 5 : 10);
+			: position - scrollbarLength + (dist >= 0.5 ? 5 : 10);
 
 		const containScrollbar = locateScrollbar >= 100 - scrollbarLength
 			? 115 - scrollbarLength 
@@ -98,7 +106,6 @@ class ScrollBar extends Component {
 		scrollbar.style.top = `${locateScrollbar}vh`;
 	}
 
-
 	render() {
 		return (
 			<div className="--scrollbar-container">
@@ -109,3 +116,30 @@ class ScrollBar extends Component {
 }
 
 export default ScrollBar;
+
+
+
+		// let locateScrollbar = 0;
+		// let containScrollbar = 0;
+		// const results = [ 
+		// 	position - (dist <= 0.5 ? 5 : 10),
+		// 	position - scrollbarLength / 2 + (dist / 2 < 5 ? -5 : (dist / 2)),
+		// 	position - scrollbarLength - (dist >= 0.5 ? 5 : 10)
+		// ];
+		// const reCalResult = [ 115 - scrollbarLength, -15 + scrollbarLength ]
+
+		// caseSwitch
+		// 	.evalTargets({ position, scrollbarLength })
+		// 	.evaluate(["!position"], endSwitch => endSwitch(results[0]))
+		// 	.evaluate(["position + scrollbarLength < 100"], endSwitch => endSwitch(results[1]))
+		// 	.default((debug, result) => {
+		// 		locateScrollbar = result || results[2];
+		// 		debug();
+		// 	})
+		// 	.evalTargets({ locateScrollbar, scrollbarLength })
+		// 	.evaluate(["locateScrollbar >= 100 - scrollbarLength"], endSwitch => endSwitch(reCalResult[0]))
+		// 	.evaluate(["locateScrollbar <= -15"], endSwitch => endSwitch(reCalResult[1]))
+		// 	.default((debug, result) => {
+		// 		containScrollbar = containScrollbar || locateScrollbar;
+		// 		debug();
+		// 	});
