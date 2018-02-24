@@ -1,4 +1,4 @@
-class Switch {
+class Match {
 
   get testTargets() {
     return this.targets;
@@ -102,26 +102,25 @@ class Switch {
     const matchState = this.isMatched;
     
     if (matchState || !testTargets) {
-      // console.log("false input or matched found");
       return false;
     }
+
+    return this._matchingExpression(condition, testTargets); 
+  }
+
+  _matchingExpression(condition, testTargets) {
+    const args = []; 
+    const values = []; 
+    const expression = "return " + condition;
     
-    const targetKeys = [ "[!]", ...Object.keys(testTargets) ];
-    const matchingPattern = new RegExp(targetKeys.join("|"), "g");
+    Object
+      .entries(testTargets)
+      .forEach(elem => {
+        args.push(elem[0]);
+        values.push(elem[1]);
+      });
 
-    // since it's imppossible to use original name, we need to 
-    // replace the name with actual value in the condition expression
-    // console.log({condition, matchingPattern});
-    // thanks to javascript ignoring type with none triple equal expression, "1" <= 2 === true
-    const replaceText = matched => {
-      const isBoolean = matched === "!" ? true : false;
-      const value = testTargets[matched];
-      return !!+value || isBoolean ? value : `"${value}"`;
-    }
-
-    const redactedCondition = condition.replace(matchingPattern, replaceText);
-    // console.log(redactedCondition);
-    return eval(redactedCondition); // eval might be able to be replaced by Function constructor
+    return new Function(...args, expression)(...values);
   }
 
   _evaluateAND(conditions) {
@@ -143,7 +142,7 @@ class Switch {
   }
 }
 
-export default Switch;
+export default Match;
 
 
 // as powerful as it gets, the interface is still too much
@@ -155,3 +154,7 @@ export default Switch;
 // idea is that the with default debug, the user can get a test log
 // of failed, and passed tests --> with that in mind, failed complex case 
 // can 
+
+// will need to reconsider the interface of the design
+// a factory function seems to be a better pattern than object constructor
+

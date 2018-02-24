@@ -1,12 +1,12 @@
-import Switch from "../util/Switch";
+import Match from "../util/Switch";
 
 
-describe("test different use cases of Switch", () => {
+describe("test different use cases of Match", () => {
 
   let caseSwitch;
 
   beforeAll(() => {
-    caseSwitch = new Switch();
+    caseSwitch = new Match();
   });
 
   test("if evalTargets takes in null or types other than object literal, should throw error", () => {

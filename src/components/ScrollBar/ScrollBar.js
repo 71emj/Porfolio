@@ -65,10 +65,8 @@ class ScrollBar extends Component {
 
 		console.log(dist);
 
-		const locateScrollbar = !position
-			? position - (dist <= 0.5 ? 8 : 10)
-			: position + scrollbarLength < 100
-			? position - scrollbarLength / 2 + (dist / 2 < 0 ? -8 : (dist / 2)) 
+		const locateScrollbar = !position || position + scrollbarLength < 100
+			? position + (dist < 0 ? -8 : (dist / 2))
 			: position - scrollbarLength + (dist >= 0.5 ? 8 : 10);
 
 		const containScrollbar = locateScrollbar >= 100 - scrollbarLength
@@ -88,11 +86,10 @@ class ScrollBar extends Component {
 		const { scrollbar, scrollbarLength } = this.DOMS;
 		const { position } = this.props; // updated position
 
-		const locateScrollbar = !position
+		const locateScrollbar = !position || position + scrollbarLength < 100
 			? position
-			: position + scrollbarLength < 100
-			? position - scrollbarLength / 2
 			: position - scrollbarLength;
+
 		console.log(scrollbarLength);
 
 		scrollbar.style.top = `${locateScrollbar}vh`;

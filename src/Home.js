@@ -29,7 +29,7 @@ class Home extends Component {
   }
 
   get scrollbarLocation() {
-    return new Map([["home", 0], ["about", 25], ["skills", 50], ["portfolio", 75], ["contact", 100]]);
+    return new Map([["home", 0], ["about", 21.75], ["skills", 43.5], ["portfolio", 65.25], ["contact", 100]]);
   }
   
   get DOMS() {
