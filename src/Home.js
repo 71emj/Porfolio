@@ -9,14 +9,14 @@ import Portfolio from "./components/Portfolio";
 import Contact from "./components/Contact";
 
 import DOMScroll from "./util/Scroll";
-import Switch from "./util/Switch";
+import SwitchCase from "./util/Switch";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
 // later will add more pages to the collections
-const switchCase = new Switch();
+const switchCase = new SwitchCase();
 const Scroll = new DOMScroll();
 
 class Home extends Component {
@@ -61,20 +61,13 @@ class Home extends Component {
     
     let name = "";
     switchCase
-      .evalTargets({ ratio })
-      .evaluate([`ratio <= .25`], endSwitch => {
-        endSwitch("home");
-      })
-      .evaluate([`ratio <= .5`], endSwitch => {
-        endSwitch("about");
-      })
-      .evaluate([`ratio <= .75`], endSwitch => {
-        endSwitch("skills");
-      })
-      .evaluate([`ratio <= 1`], endSwitch => {
-        endSwitch("contact");
-      })
-      .default((debug, results) => { 
+      .setMatchingTargets({ ratio })
+      .onMatch("ratio >= .22", "about")
+      .onMatch("ratio >= .44", "skills")
+      .onMatch("ratio >= .66", "portfolio")
+      .onMatch("ratio >= .88", "contact")
+      .onOtherwise("home")
+      .onEnd((debug, results) => { 
         name = results;
         debug();
       });
@@ -90,23 +83,13 @@ class Home extends Component {
     let backgroundScrollY = 0;
 
     switchCase
-      .evalTargets({ name })
-      .evaluate(["name === 'home'"], endSwitch => {
-        endSwitch([3, false]);
-      })
-      .evaluate(["name === 'about'"], endSwitch => {
-        endSwitch([18, false]);
-      })
-      .evaluate(["name === 'skills'"], endSwitch => {
-        endSwitch([42, true]);
-      })
-      .evaluate(["name === 'portfolio'"], endSwitch => {
-        endSwitch([68, true]);
-      })
-      .evaluate(["name === 'contact'"], endSwitch => {
-        endSwitch([85, true]);
-      })
-      .default((debug, results) => { 
+      .setMatchingTargets({ name })
+      .onMatch("name === 'home'", [3, false])
+      .onMatch("name === 'about'", [18, false])
+      .onMatch("name === 'skills'", [42, true])
+      .onMatch("name === 'portfolio'", [68, true])
+      .onMatch("name === 'contact'", [85, true])
+      .onEnd((debug, results) => { 
         const [ scrollVal, bool ] = results;
         backgroundScrollY = scrollVal;
         updateFields.invertStyle = bool;

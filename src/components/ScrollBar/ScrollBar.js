@@ -16,7 +16,6 @@ class ScrollBar extends Component {
 		const { html, docHeight } = this.DOMS;
 		const { position } = this.props;
 		const scrollTop = html.scrollTop;
-		console.log({ prev: this.prevScroll, scrollTop })
 		const scroll = this.prevScroll <= scrollTop ? (position - scrollTop) : (scrollTop - position);
 		return scroll * (100 / docHeight) * 0.5;
 	}
@@ -30,26 +29,45 @@ class ScrollBar extends Component {
 	}
 
 	componentDidMount() {
-		const { scrollbar, scrollbarLength } = this.DOMS;
+		const { scrollbar, scrollbarLength, docHeight } = this.DOMS;
 		scrollbar.style.height = scrollbarLength + "vh";
-		this.prevScroll = window.scrollY;
+		// this.prevScroll = window.scrollY;
 		this.findScrollBarPosition();
-		window.addEventListener("scroll", this.throttledScrollEvent);
+		window.addEventListener("scroll", evt => {
+			this.prevScroll = window.pageYOffset * 100 / docHeight;
+			this.requestTick();
+		});
+		// window.addEventListener("scroll", this.throttledScrollEvent);
 	}
 
-	throttledScrollEvent = evt => {
-		if (this.TID) {
-			return;
-		}
-		// the purpose is to keep event from firing too many times
-		this.TID = setTimeout(() => {
-			this.prevScroll = window.scrollY;
-			this.TID = null;
-		}, 1000); 
-
-		this.displayScrollbar(evt);
+	scrollEvent = evt => {
+		this.displayScrollbar();
 		this.scroll();
+		this.ticking = false;
 	}
+	
+	requestTick() {
+		if (!this.ticking) {
+			window.requestAnimationFrame(this.scrollEvent);
+			this.ticking = true;
+		}
+	}
+
+	// throttledScrollEvent = evt => {
+	// 	if (this.TID) {
+	// 		return;
+	// 	}
+	// 	// the purpose is to keep event from firing too many times
+	// 	this.TID = setTimeout(() => {
+	// 		const { scrollbar, scrollbarLength, html } = this.DOMS;
+	// 		this.prevScroll = html.scrollTop /*window.scrollY*/;
+	// 		// this.prevScroll = this.props.position;
+	// 		this.TID = null;
+	// 	}, 1000); 
+
+	// 	this.displayScrollbar();
+	// 	this.scroll();
+	// }
 
 	displayScrollbar() {
 		const { scrollbar } = this.DOMS;
@@ -59,23 +77,39 @@ class ScrollBar extends Component {
 	}
 
 	scroll() {
-		const { scrollbar, scrollbarLength } = this.DOMS;
+		const { scrollbar, scrollbarLength, docHeight } = this.DOMS;
 		const { position } = this.props; // previous position
 		const dist = this.scrollDist;
 
-		console.log(dist);
+		// use rebounce instead of dynamic capture
+		// 
+		const min = position - 2;
+		const max = position + 2;
 
-		const locateScrollbar = !position || position + scrollbarLength < 100
-			? position + (dist < 0 ? -8 : (dist / 2))
-			: position - scrollbarLength + (dist >= 0.5 ? 8 : 10);
+		const currentPosition = window.pageYOffset * 100 / docHeight;
+		const movingDown = dist < 0 ? true : false;
+		
+		const scrollY = movingDown 
+			? currentPosition < max 
+				? 1 : -1 
+			: currentPosition > min 
+				? -1 : 1;
 
-		const containScrollbar = locateScrollbar >= 100 - scrollbarLength
-			? 115 - scrollbarLength 
-			: locateScrollbar <= -15
-			? -15 + scrollbarLength
-			: locateScrollbar;
+		const nextPosition = this.prevScroll - scrollY;
+		console.log({nextPosition, currentPosition, max, min});
+		// console.log(dist);
 
-		scrollbar.style.top = `${containScrollbar}vh`;
+		// const locateScrollbar = !position || position + scrollbarLength < 100
+		// 	? position + (dist < 0 ? -10 : 10)
+		// 	: position - scrollbarLength + 10;
+
+		// const containScrollbar = locateScrollbar >= 100 - scrollbarLength
+		// 	? 115 - scrollbarLength 
+		// 	: locateScrollbar <= -15
+		// 	? -15 + scrollbarLength
+		// 	: locateScrollbar;
+
+		scrollbar.style.top = `${nextPosition}vh`;
 	}
 
 	componentDidUpdate() {
@@ -87,11 +121,10 @@ class ScrollBar extends Component {
 		const { position } = this.props; // updated position
 
 		const locateScrollbar = !position || position + scrollbarLength < 100
-			? position
+			? position 
 			: position - scrollbarLength;
 
-		console.log(scrollbarLength);
-
+		console.log({ locateScrollbar, scrollbarLength, position });
 		scrollbar.style.top = `${locateScrollbar}vh`;
 	}
 
@@ -105,3 +138,35 @@ class ScrollBar extends Component {
 }
 
 export default ScrollBar;
+
+
+// (function() {
+//   var lastScrollY = 0;
+//   var ticking = false;
+
+//   var update = function() {
+//     // do your stuff
+//     ticking = false;
+//   };
+
+//   var requestTick = function() {
+//     if (!ticking) {
+//       window.requestAnimationFrame(update);
+//       ticking = true;
+//     }
+//   };
+
+//   var onScroll = function() {
+//     lastScrollY = window.scrollY;
+//     requestTick();
+//   };
+
+//   $(window).on('scroll', onScroll);
+// })();
+
+// animateBar() {
+	
+
+	
+// }
+
