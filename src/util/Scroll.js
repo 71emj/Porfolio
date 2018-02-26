@@ -1,6 +1,6 @@
 /*import SmoothScroll from "smoothscroll-polyfill";
 SmoothScroll.polyfill();*/
-import Switch from "./Switch";
+import SwitchCase from "./Switch";
 import scrollConditions from "../config/condition.json";
 
 // manage scroll and scroll condition
@@ -37,8 +37,8 @@ class Scroll {
 
     this._setState({ visible: visible || this.visible });
 
-    clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(() => {
+    clearTimeout(this.TID);
+    this.TID = setTimeout(() => {
       this._evaluateCondition(this.state);
       const { scrollName, scrollToPosition, didUpdate, nameValAsFlag } = this.state;
 
@@ -57,8 +57,8 @@ class Scroll {
     const { scrollToPosition, didUpdate } = this.state;
     const { winScrollY, winHeight } = this.DOMS;
     const positions = [0, winHeight, winHeight * 2];
-    
-    // this is unclear and uneccessary complex
+
+    // this is unclear and uneccessarily complex
     const positionIsPrecise = positions.reduce((sum, val) => {
       const scrollY = Math.ceil(winScrollY);
       return val === 0 ? (scrollY === val ? sum + 1 : sum) : (scrollY === val ? sum + val : sum);
@@ -91,35 +91,20 @@ class Scroll {
       return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
     };
 
-    const caseSwitch = new Switch();
+    const caseSwitch = new SwitchCase();
     const setParamsToState = (name, scollVal, bool) => {
       params.push(name, scollVal, bool);
       this._setState(addToFields(params));
     }
 
     caseSwitch
-      .evalTargets({ name }, { visible, winScrollY, winHeight, scrollDist })
-      .evaluate(scrollConditions["home"], { operator: "OR" },
-        endSwitch => {
-          endSwitch(["home", 0, true]);
-        })
-      .evaluate(scrollConditions["about"], { operator: "OR" },
-        endSwitch => {
-          endSwitch(["about", winHeight, true]);
-        })
-      .evaluate(scrollConditions["skills"], { operator: "OR" },
-        endSwitch => {
-          endSwitch(["skills", winHeight * 2, true]);
-        })
-      .evaluate(scrollConditions["portfolio"], { operator: "OR" },
-        endSwitch => {
-          endSwitch(["portfolio", winHeight * 3, true]);
-        })
-      .evaluate(scrollConditions["contact"], { operator: "OR" },
-        endSwitch => {
-          endSwitch(["contact", winHeight * 4, true]);
-        })
-      .default((debug, results) => {
+      .setMatchingTargets({ name, visible, winScrollY, winHeight, scrollDist })
+      .onMatchOR(scrollConditions["home"], ["home", 0, true])
+      .onMatchOR(scrollConditions["about"], ["about", winHeight, true])
+      .onMatchOR(scrollConditions["skills"], ["skills", winHeight * 2, true])
+      .onMatchOR(scrollConditions["portfolio"], ["portfolio", winHeight * 3, true])
+      .onMatchOR(scrollConditions["contact"], ["contact", winHeight * 4, true])
+      .onEnd((debug, results) => {
         results && setParamsToState(...results);
         debug();
       });

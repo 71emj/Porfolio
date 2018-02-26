@@ -1,56 +1,64 @@
-import Match from "../util/Switch";
+import SwitchCase from "../util/Switch";
+import Match from "../util/Match";
 
-
-describe("test different use cases of Match", () => {
-
+describe("test native methods of SwitchCase", () => {
   let caseSwitch;
 
   beforeAll(() => {
-    caseSwitch = new Match();
-  });
-
-  test("if evalTargets takes in null or types other than object literal, should throw error", () => {
-    caseSwitch
-      .evalTargets()
-      .evaluate([`name === "skills"`], result => {
-        expect(result).toBeFalsy();
-      });
-  });
-
-  test("if input name is the same as the literal condition name, if value matched should return true", () => {
-    caseSwitch
-      .evalTargets({ home: "home" })
-      .evaluate([`home === "home"`], result => {
-        expect(result).toBeTruthy();
-      });
+    caseSwitch = new SwitchCase();
   });
 
   test("static, single input/value should return bool", () => {
     caseSwitch
-      .evalTargets({ name: "skills" })
-      .evaluate([`name === "skills"`], result => {
-        expect(result).toBeTruthy();
-      });
+      .setMatchingTargets({ name: "skills" })
+      .onMatch([`name === "skills"`], "It's skills")
+      .onMatch([`name === "home"`], "It's home")
+			.onEnd((debug, vals) => expect(vals).toBe("It's skills"));
   });
 
-  test("mathematical expression w/ multiple variables should return bool", () => {
+  test("setting string instead of array as condition in simple match should be valid", () => {
+    caseSwitch
+      .setMatchingTargets({ name: "skills" })
+      .onMatch(`name === "skills"`, "It's skills")
+			.onEnd((debug, vals) => expect(vals).toBe("It's skills"));
+  });
+
+  test("if setMatchingTargets takes in null or types other than object literal, should throw error", () => {
+    caseSwitch
+      .setMatchingTargets()
+      .onMatch([`name === "skills"`], "It's skills")
+      .onMatch([`name === "home"`], "It's home")
+			.onEnd((debug, vals) => expect(vals).toBe(null));
+  });
+
+  test("if input name is the same as the literal condition name, if value matched should return true", () => {
+    caseSwitch
+      .setMatchingTargets({ home: "home" })
+      .onMatch([`home === "skills"`], "It's skills")
+      .onMatch([`home === "home"`], "It's home")
+			.onEnd((debug, vals) => expect(vals).toBe("It's home"));
+  });
+
+
+  test("expression w/ multiple variables and conditions can still be evaluated", () => {
     const params = {
       winScrollY: 100,
       winHeight: 300
     }
 
     caseSwitch
-      .evalTargets(params)
-      .evaluate([`winScrollY < winHeight - 200`], result => {
-        expect(result).toBeTruthy();
-      });
+      .setMatchingTargets(params)
+      .onMatch([`winScrollY < winHeight - 200`], "case 1 is true")
+      .otherwise("I lied it's false")
+      .onEnd((debug, vals) => expect(vals).toBe("I lied it's false"));
 
     params.winHeight = 200;
     caseSwitch
-      .evalTargets(params)
-      .evaluate([`winScrollY < winHeight - 200`], result => {
-        expect(result).toBeFalsy();
-      });
+      .setMatchingTargets(params)
+      .onMatchOR([`winScrollY < winHeight - 200`, `winScrollY > winHeight - 200`], "case 1 is true")
+      .otherwise("I lied it's false")
+      .onEnd((debug, vals) => expect(vals).toBe("case 1 is true"));
+
   });
 
   test("if variable name, wrapped in quotes should return falsy", () => {
@@ -60,62 +68,47 @@ describe("test different use cases of Match", () => {
     }
 
 		caseSwitch
-      .evalTargets({ name: "skills" })
-      .evaluate([`'name' === "skills"`], result => {
-        expect(result).toBeFalsy();
-      });
+      .setMatchingTargets({ name: "skills" })
+      .onMatch(`'name' === "skills"`, true)
+      .onEnd((debug, results) => expect(results).toBeFalsy());
 
     caseSwitch
-      .evalTargets(params)
-      .evaluate([`winScrollY < 'winHeight' - 200`], result => {
-        expect(result).toBeTruthy();
-      });
-
-    caseSwitch
-      .evalTargets(params)
-      .evaluate([`winScrollY < winHeight - '200'`], result => {
-        expect(result).toBeTruthy();
-      });
+      .setMatchingTargets(params)
+      .onMatch(`winScrollY < 'winHeight' - 200`, true)
+      .onEnd((debug, results) => expect(results).toBeFalsy());
   });
 
-  test("use returnResult will get expression like behavior", () => {
+  test("returning value in onEnd, will turned the whole chain into an expression", () => {
   	const name = "home";
   	const resultOfMatch = 
   	caseSwitch
-      .evalTargets({ name })
-      .evaluate([`name === "skills"`], result => {
-				result("It's skills");
-      })
-      .evaluate([`name === "about"`], result => {
-				result("It's about");
-      })
-      .evaluate([`name === "home"`], result => {
-				result("It's home");
-      })
-      .returnResult();
+      .setMatchingTargets({ name })
+      .onMatch(`name === "skills"`, "It's skills")
+      .onMatch(`name === "about"`, "It's about")
+      .onMatch(`name === "home"`, "It's home")
+      .onEnd((debug, result) => {
+      	console.log(result);
+      	return result;
+      });
 
    	expect(resultOfMatch).toBe("It's home");
   })
 });
 
-// caseSwitch
-// 	.setTargets([{ winScrollY, winHeight, name }])
-// 	.evaluate([`winScrollY < winHeight - 200`, `name === "home"`], { operator: "OR" }, function() {
-// 		console.log("||||||||||||||||||||||||||||||||||||||");
-// 		console.log("setting OR cases eval successful");
-// 	});
+describe("test Match, a wrapper of SwitchCase", () => {
 
-// caseSwitch
-// 	.setTargets([{ name }])
-// 	.evaluate([`name === "skills"`], function() {
-// 		console.log("||||||||||||||||||||||||||||||||||||||");
-// 		console.log("chainable test case 1");
-// 	})
-// 	.evaluate([`name === "contact"`], function() {
-// 		console.log("||||||||||||||||||||||||||||||||||||||");
-// 		console.log("chainable test case 2");
-// 	})
-// 	.evaluate([`name === "about"`], function() {
-// 		console.log("||||||||||||||||||||||||||||||||||||||");
-// 		console.log("chainable test case 3");
-// 	});
+	test("the Match wrapper will return an instance of SwitchCase", () => {
+		const match = Match();
+		expect(typeof match).toBe("function");
+	});	
+
+	test("Match can pass in arguments after instanciation", () => {
+		const match = Match();
+		
+		match({ name: "home" })
+			.onMatch("name === 'home'", "It's true!!")
+			.otherwise("It's false")
+			.onEnd((debug, result) => expect(result).toBe("It's true!!"));
+	});
+
+})

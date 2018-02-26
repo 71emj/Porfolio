@@ -1,25 +1,25 @@
 {
 	"home": [
 		"name === 'home'",
-    "visible === 'about' && winScrollY < winHeight - 50 && scrollDist >= 60"
+    "visible === 'about' && winScrollY < winHeight - 300 && scrollDist >= 50"
 	],
 	"about": [
 		"name === 'about'",
-    "visible === 'home' && winScrollY > 50 && scrollDist <= -60",
-    "visible === 'skills' && winScrollY < winHeight * 2 - 50 && scrollDist >= 60"
+    "visible === 'home' && winScrollY > 300 && scrollDist <= -50",
+    "visible === 'skills' && winScrollY < winHeight * 2 - 300 && scrollDist >= 50"
 	],
 	"skills": [
 		"name === 'skills'",
-    "visible === 'about' && winScrollY > winHeight + 50 && scrollDist <= -60",
-    "visible === 'portfolio' && winScrollY < winHeight * 3 - 50 && scrollDist >= 60"
+    "visible === 'about' && winScrollY > winHeight + 300 && scrollDist <= -50",
+    "visible === 'portfolio' && winScrollY < winHeight * 3 - 300 && scrollDist >= 50"
 	],
 	"portfolio": [
 		"name === 'portfolio'",
-    "visible === 'skills' && winScrollY > winHeight * 2 + 50 && scrollDist <= -60",
-    "visible === 'contact' && winScrollY < winHeight * 4 - 50 && scrollDist >= 60"
+    "visible === 'skills' && winScrollY > winHeight * 2 + 300 && scrollDist <= -50",
+    "visible === 'contact' && winScrollY < winHeight * 4 - 300 && scrollDist >= 50"
 	],
 	"contact": [
 		"name === 'contact'",
-    "visible === 'portfolio' && winScrollY > winHeight * 3 + 50 && scrollDist <= -60"
+    "visible === 'portfolio' && winScrollY > winHeight * 3 + 300 && scrollDist <= -50"
 	]
 }
