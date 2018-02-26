@@ -20,10 +20,8 @@ class SwitchCase {
   }
 
   setMatchingTargets(...targets) { 
-    const len = targets.length;
-    if (!len) {
-      this.testTargets = null;
-    }
+    // the default length guaranteed for loop to be run once, clearing out prev data if exist
+    const len = targets.length || 1;
     for (let i = 0, temp = {}; i < len; i++) {
       this.testTargets = Object.assign(temp, targets[i]);
     }
