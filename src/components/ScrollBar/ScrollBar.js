@@ -78,16 +78,25 @@ class ScrollBar extends Component {
 
 	scroll() {
 		const { scrollbar, scrollbarLength, docHeight } = this.DOMS;
-		const { position } = this.props; // previous position
+		const { position, limit } = this.props; // previous position
 		const dist = this.scrollDist;
 
 		// use rebounce instead of dynamic capture
 		// 
-		const min = position - 2;
-		const max = position + 2;
+		const min = position - limit - 5;
+		const max = position + limit + 5;
+
+		// set a scroll dist limit 
+		// every frame look to seee if exceed limit
+		// not animate distance
+		// yes stop 
 
 		const currentPosition = window.pageYOffset * 100 / docHeight;
 		const movingDown = dist < 0 ? true : false;
+		const destination = dist < 0 
+			? position + limit 
+			: position - limit;
+		const distanceYetToTravel = Math.abs(destination - position);
 		
 		const scrollY = movingDown 
 			? currentPosition < max 
@@ -95,7 +104,12 @@ class ScrollBar extends Component {
 			: currentPosition > min 
 				? -1 : 1;
 
-		const nextPosition = this.prevScroll - scrollY;
+		const nextPosition = this.prevScroll >= max 
+			? max 
+			: this.prevScroll <= min 
+			? min 
+			: this.prevScroll;
+
 		console.log({nextPosition, currentPosition, max, min});
 		// console.log(dist);
 
@@ -108,12 +122,11 @@ class ScrollBar extends Component {
 		// 	: locateScrollbar <= -15
 		// 	? -15 + scrollbarLength
 		// 	: locateScrollbar;
-
 		scrollbar.style.top = `${nextPosition}vh`;
 	}
 
 	componentDidUpdate() {
-		this.findScrollBarPosition();
+		// this.findScrollBarPosition();
 	}
 
 	findScrollBarPosition() {
@@ -140,33 +153,7 @@ class ScrollBar extends Component {
 export default ScrollBar;
 
 
-// (function() {
-//   var lastScrollY = 0;
-//   var ticking = false;
-
-//   var update = function() {
-//     // do your stuff
-//     ticking = false;
-//   };
-
-//   var requestTick = function() {
-//     if (!ticking) {
-//       window.requestAnimationFrame(update);
-//       ticking = true;
-//     }
-//   };
-
-//   var onScroll = function() {
-//     lastScrollY = window.scrollY;
-//     requestTick();
-//   };
-
-//   $(window).on('scroll', onScroll);
-// })();
-
-// animateBar() {
-	
-
-	
-// }
+// animate scroll
+// once the component received the updated props
+// animate scroll to 
 

@@ -37,8 +37,8 @@ class Scroll {
 
     this._setState({ visible: visible || this.visible });
 
-    clearTimeout(this.timeoutId);
-    this.timeoutId = setTimeout(() => {
+    clearTimeout(this.TID);
+    this.TID = setTimeout(() => {
       this._evaluateCondition(this.state);
       const { scrollName, scrollToPosition, didUpdate, nameValAsFlag } = this.state;
 
@@ -58,7 +58,7 @@ class Scroll {
     const { winScrollY, winHeight } = this.DOMS;
     const positions = [0, winHeight, winHeight * 2];
 
-    // this is unclear and uneccessary complex
+    // this is unclear and uneccessarily complex
     const positionIsPrecise = positions.reduce((sum, val) => {
       const scrollY = Math.ceil(winScrollY);
       return val === 0 ? (scrollY === val ? sum + 1 : sum) : (scrollY === val ? sum + val : sum);

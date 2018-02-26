@@ -19,8 +19,7 @@ class SwitchCase {
     this.result = null;
   }
 
-  // [{ key, value }, { key, value }]
-  setMatchingTargets(...targets) { // : array of objects
+  setMatchingTargets(...targets) { 
     const len = targets.length;
     if (!len) {
       this.testTargets = null;
@@ -30,109 +29,55 @@ class SwitchCase {
     }
     return this;
   }
-
-  // since this is chainable, possible side effect can be introduced by 
-  // fall through... will need to provide method to break out of chain
-  evaluate(cases, options, callback) {
-    [options, callback] = typeof options === "function" ? [{}, options] : [options, callback];
-    const conditions = this._setConditions(cases);
-    const { operator } = options;
-    const exit = val => {
-      this.isMatched = true;
-      this.result = val;
-    }
-
-    if (operator === "AND") {
-      this._evaluateAND(conditions) && callback(exit);
-      return this;
-    }
-
-    if (operator === "OR") {
-      this._evaluateOR(conditions) && callback(exit);
-      return this;
-    }
-
-    this._evaluateSingleCase(conditions.get(0)) && callback(exit);
-    return this;
-  }
-
-  _break(val) {
-    this.isMatched = true;
-    this.result = val;
-  }
-
+  
+  // interfaces can be extracted from object, and defined as 
+  // wrapper methods
   onMatch(singleExp, values, fn) {
-    const cond = this._setConditions(singleExp);
-    if (this._evaluateSingleCase(cond.get(0))) {
-      this._break(values);
-      typeof fn === "function" && fn("not sure if there is anything worth passing out");
-    }
+    this._findMatch(singleExp, values, fn, "SIMPLE");
     return this;
   }
 
   onMatchOR(expressions, values, fn) {
-    const conditions = this._setConditions(expressions);
-    if (this._evaluateOR(conditions)) {
-      this._break(values);
-      typeof fn === "function" && fn();
-    }
+    this._findMatch(expressions, values, fn, "OR");
     return this;
   }
 
   onMatchAND(expressions, values, fn) {
-    const conditions = this._setConditions(expressions);
-    if (this._evaluateAND(conditions)) {
-      this._break(values);
-      typeof fn === "function" && fn();
-    }
+    this._findMatch(expressions, values, fn, "OR");
     return this;
   }
 
-  onOtherwise(values, fn) {
-    const matchState = this.isMatched;
-    if (matchState) {
-      return this;
-    }
-    // the _break is designed to stop further matching
-    // however with otherwise, this pattern will prevent any further 
-    // matching in the chain
-    // which might be a good idea to encourage better practice, but for now 
-    // i'll keep the option open
-    // this._break(values);
-    this.result = values;
-    typeof fn === "function" && fn();
+  otherwise(values, fn) {
+    this._findMatch("true", values, fn, "SIMPLE");
     return this;
   }
-  
-  // console.log(this.result);
-  // during evaluation there should be a helper method to set 
-  // eval log that can be easily aquired in this function
-  // will help the user to know more about the evaluation
-  // can do a split case by case log
-  // console.log(this), should log all different sets of evals
+
   onEnd(fn) {
     const debug = () => {
       console.log(this.testTargets);
     }
-    fn(debug, this.result);
+    return fn(debug, this.result);
   }
 
-  onEndThenReturn() {
-    return this.result;
+  _break(val, fn) {
+    this.isMatched = true;
+    this.result = typeof fn === "function" ? fn(val) : val;
+    return true;
   }
 
-  /// will need a way to map out case - val pair 
-  /// in order to cheive chaining 
-  // returnResult() {
-  //   return this.result
-  // } /// need rework
-
-  default (callback) {
-    const logEvaluations = () => {
-      console.log(this.testTargets);
-    }
-    callback(logEvaluations, this.result);
-    return this;
+  _findMatch(exp, values, fn, flag) {
+    [values, fn] = typeof values === "function" ? [null, values] : [values, fn];
+    const cond = this._setConditions(exp);
+    const methods = {
+      OR: "_evaluateOR",
+      AND: "_evaluateAND",
+      SIMPLE: "_evaluateSingleCase",
+    };
+    
+    const matching = flag === "SIMPLE" 
+      ? this[ methods[flag] ](cond.get(0)) 
+      : this[ methods[flag] ](cond);
+    return matching ? this._break(values, fn) : false;
   }
 
   _setConditions(cases) {
@@ -146,6 +91,24 @@ class SwitchCase {
     }
     // now cases are set into dictionary
     return conditions;
+  }
+
+  _evaluateAND(conditions) {
+    for (let i = 0; i < conditions.size; i++) {
+      if (!this._evaluateSingleCase(conditions.get(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  _evaluateOR(conditions) {
+    for (let i = 0; i < conditions.size; i++) {
+      if (this._evaluateSingleCase(conditions.get(i))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   _evaluateSingleCase(condition) {
@@ -173,51 +136,6 @@ class SwitchCase {
 
     return new Function(...args, expression)(...values);
   }
-
-  _evaluateAND(conditions) {
-    for (let i = 0; i < conditions.size; i++) {
-      if (!this._evaluateSingleCase(conditions.get(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  _evaluateOR(conditions) {
-    for (let i = 0; i < conditions.size; i++) {
-      if (this._evaluateSingleCase(conditions.get(i))) {
-        return true;
-      }
-    }
-    return false;
-  }
 }
 
 export default SwitchCase;
-
-// instead of passing operator as option should be multiple interface
-
-// switchCase(...testTargets)
-//  .onMatch("expression", "values")
-//  .onMatchOR("expression", "values")
-//  .onMatchAnd("expression", "values")
-//  .onEnd((debug, "values of match case") => { expression })
-
-// switchCase(...testTargets)
-//  .onMatch("expression", "values")
-//  .onMatchOR("expression", "values")
-//  .onOtherwise("values")
-//  .onEndThenRet(); // 
-
-// as powerful as it gets, the interface is still too much
-// need to reduce as much noise as possible
-// will also need to add features such as expression
-
-// tbd, prob not neccessary
-// a test behavior might be useful to bundle with debug
-// idea is that the with default debug, the user can get a test log
-// of failed, and passed tests --> with that in mind, failed complex case 
-// can 
-
-// will need to reconsider the interface of the design
-// a factory function seems to be a better pattern than object constructor

@@ -62,11 +62,11 @@ class Home extends Component {
     let name = "";
     switchCase
       .setMatchingTargets({ ratio })
-      .onMatch("ratio >= .22", "about")
-      .onMatch("ratio >= .44", "skills")
-      .onMatch("ratio >= .66", "portfolio")
-      .onMatch("ratio >= .88", "contact")
-      .onOtherwise("home")
+      .onMatch("ratio <= .22", "home")
+      .onMatch("ratio <= .44", "about")
+      .onMatch("ratio <= .66", "skills")
+      .onMatch("ratio <= .88", "portfolio")
+      .otherwise("contact")
       .onEnd((debug, results) => { 
         name = results;
         debug();
@@ -125,7 +125,7 @@ class Home extends Component {
     const scrollbar = this.scrollbarLocation;
     return (
       <div>
-        <ScrollBar domElements={this.DOMS} position={scrollbar.get(visible)} fadeTime={800}/>
+        <ScrollBar domElements={this.DOMS} position={scrollbar.get(visible)} limit={25} fadeTime={800}/>
         <Nav logo="71emj" linkTo={this.linkHandler} key="header" invert={invertStyle} />
         <main key="content">
           <Canvas />
