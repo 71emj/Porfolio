@@ -88,7 +88,6 @@ class Home extends Component {
         const [ scrollVal, bool ] = results;
         backgroundScrollY = scrollVal;
         updateFields.invertStyle = bool;
-        debug();
       });
 
     this.gradientScroll(backgroundScrollY);
