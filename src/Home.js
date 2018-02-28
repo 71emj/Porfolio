@@ -60,10 +60,10 @@ class Home extends Component {
     const ratio = window.scrollY / docH;
    
     const name = compare({ ratio })
-      .toCase("ratio <= .22", "home")
-      .toCase("ratio <= .44", "about")
-      .toCase("ratio <= .66", "skills")
-      .toCase("ratio <= .88", "portfolio")
+      .toCase("<=.22", "home")
+      .toCase("<=.44", "about")
+      .toCase("<=.66", "skills")
+      .toCase("<=.88", "portfolio")
       .toAllOther("contact")
       .Ended((debug, result) => result);
 
