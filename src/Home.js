@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Compare from "case-compare";
 import Nav from "./components/Nav";
 import ScrollBar from "./components/ScrollBar";
 import Canvas from "./components/Canvas";
@@ -9,14 +10,13 @@ import Portfolio from "./components/Portfolio";
 import Contact from "./components/Contact";
 
 import DOMScroll from "./util/Scroll";
-import SwitchCase from "./util/Switch";
 import "./App.css";
 
 // the idea is, first ver of the portfolio will only contain in main page
 // portfolio link will lead to portfolio part of the page, which will only have a message
 // and links to repos
 // later will add more pages to the collections
-const switchCase = new SwitchCase();
+const compare = new Compare();
 const Scroll = new DOMScroll();
 
 class Home extends Component {
@@ -58,19 +58,14 @@ class Home extends Component {
   componentDidMount() {
     const { valY, docH } = this.DOMS;
     const ratio = window.scrollY / docH;
-    
-    let name = "";
-    switchCase
-      .setMatchingTargets({ ratio })
-      .onMatch("ratio <= .22", "home")
-      .onMatch("ratio <= .44", "about")
-      .onMatch("ratio <= .66", "skills")
-      .onMatch("ratio <= .88", "portfolio")
-      .otherwise("contact")
-      .onEnd((debug, results) => { 
-        name = results;
-        debug();
-      });
+   
+    const name = compare({ ratio })
+      .toCase("ratio <= .22", "home")
+      .toCase("ratio <= .44", "about")
+      .toCase("ratio <= .66", "skills")
+      .toCase("ratio <= .88", "portfolio")
+      .toAllOther("contact")
+      .Ended((debug, result) => result);
 
     Scroll.scrollToPlace({ name }, this.scrollAndUpdateState);
     this.adjustBackground();
@@ -82,14 +77,14 @@ class Home extends Component {
     const updateFields = { visible: name };
     let backgroundScrollY = 0;
 
-    switchCase
-      .setMatchingTargets({ name })
-      .onMatch("name === 'home'", [3, false])
-      .onMatch("name === 'about'", [18, false])
-      .onMatch("name === 'skills'", [42, true])
-      .onMatch("name === 'portfolio'", [68, true])
-      .onMatch("name === 'contact'", [85, true])
-      .onEnd((debug, results) => { 
+    compare({ name })
+      .toCase("home", [3, false])
+      .toCase("about", [18, false])
+      .toCase("skills", [42, true])
+      .toCase("portfolio", [68, true])
+      .toCase("contact", [85, true])
+      .toAllOther([85, true]) // when github link is clicked
+      .Ended((debug, results) => {
         const [ scrollVal, bool ] = results;
         backgroundScrollY = scrollVal;
         updateFields.invertStyle = bool;

@@ -1,6 +1,6 @@
 /*import SmoothScroll from "smoothscroll-polyfill";
 SmoothScroll.polyfill();*/
-import SwitchCase from "./Switch";
+import Compare from "case-compare";
 import scrollConditions from "../config/condition.json";
 
 // manage scroll and scroll condition
@@ -91,20 +91,19 @@ class Scroll {
       return Object.assign(updateFields, { scrollName, scrollToPosition, didUpdate });
     };
 
-    const caseSwitch = new SwitchCase();
     const setParamsToState = (name, scollVal, bool) => {
       params.push(name, scollVal, bool);
       this._setState(addToFields(params));
     }
 
-    caseSwitch
-      .setMatchingTargets({ name, visible, winScrollY, winHeight, scrollDist })
-      .onMatchOR(scrollConditions["home"], ["home", 0, true])
-      .onMatchOR(scrollConditions["about"], ["about", winHeight, true])
-      .onMatchOR(scrollConditions["skills"], ["skills", winHeight * 2, true])
-      .onMatchOR(scrollConditions["portfolio"], ["portfolio", winHeight * 3, true])
-      .onMatchOR(scrollConditions["contact"], ["contact", winHeight * 4, true])
-      .onEnd((debug, results) => {
+		const compare = new Compare({ limit: 100 });
+    compare({ name, visible, winScrollY, winHeight, scrollDist })
+      .toCaseOR(scrollConditions["home"], ["home", 0, true])
+      .toCaseOR(scrollConditions["about"], ["about", winHeight, true])
+      .toCaseOR(scrollConditions["skills"], ["skills", winHeight * 2, true])
+      .toCaseOR(scrollConditions["portfolio"], ["portfolio", winHeight * 3, true])
+      .toCaseOR(scrollConditions["contact"], ["contact", winHeight * 4, true])
+      .Ended((debug, results) => {
         results && setParamsToState(...results);
         debug();
       });
@@ -119,30 +118,3 @@ class Scroll {
 }
 
 export default Scroll;
-
-
-// a temporary solution waiting for a better eval method
-// the fall through are intentional as it replace "condition A" || "condition B"
-// which is meant to examined different type of input
-// which might be able to avoid altogether, but will have to wait for 
-// the next iteration of the code
-// switch (true) {
-//   case name === "home":
-//   case visible === "about" && winScrollY < winHeight - 200 && scrollDist >= 25:
-//     // params.push("home", 0, true);
-//     // this._setState(addToFields(params));
-//     break;
-//   case name === "about":
-//   case visible === "contact" && winScrollY < winHeight * 2 - 200 && scrollDist >= 25:
-//   case visible === "home" && winScrollY > 200 && scrollDist <= -25:
-//     // params.push("about", winHeight, true);
-//     // this._setState(addToFields(params));
-//     break;
-//   case name === "contact":
-//   case visible === "about" && winScrollY > winHeight + 200 && scrollDist <= -25:
-//     // params.push("contact", winHeight * 3, true);
-//     // this._setState(addToFields(params));
-//     break;
-//   default:
-//     console.log("nothing");
-// }
